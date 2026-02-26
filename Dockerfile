@@ -12,7 +12,7 @@ COPY package*.json ./
 
 # Installation des dépendances
 RUN apk add --no-cache python3 make g++
-RUN npm install
+RUN rm -f package-lock.json && npm install
 
 # Copie du reste des fichiers du projet
 COPY . .
