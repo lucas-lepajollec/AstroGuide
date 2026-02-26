@@ -61,7 +61,7 @@ If deploying via containers, ensure [Docker](https://docs.docker.com/get-docker/
    ```bash
    npm run dev
    ```
-   *The application will be running at `http://localhost:5173`.*
+   *The application will be running at `http://localhost:2499`.*
 
 ---
 
@@ -118,7 +118,7 @@ AstroGuide/
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start development server on port 5173 |
+| `npm run dev` | Start development server on port 2499 |
 | `npm run build` | Build the project for production with Vite |
 | `npm run preview` | Preview the generated production build locally |
 | `npm run lint` | Type-check project source code with TypeScript |
