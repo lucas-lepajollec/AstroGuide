@@ -7,17 +7,19 @@ WORKDIR /app
 ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
 
-# Copie des fichiers de dépendances
-COPY package*.json ./
-
-# Installation des dépendances
+# Installation de python3, make et g++ (requis pour node-gyp)
 RUN apk add --no-cache python3 make g++
-RUN rm -f package-lock.json && npm install
 
-# Copie du reste des fichiers du projet
+# Copie intégrale de tout le projet en premier
 COPY . .
 
-# Build de l'application React/Vite
+# Suppression nucléaire de toute trace de modules ou lock généré sous Windows
+RUN rm -rf node_modules package-lock.json
+
+# Installation des paquets en incluant les optionnels pour Tailwind Oxide
+RUN npm install --include=optional
+
+# Build final de l'application
 RUN npm run build
 
 # Stage 2: Serve avec Nginx
