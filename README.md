@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/favicon.ico" alt="AstroGuide Logo" width="100" />
+  <img src="public/logo.png" alt="AstroGuide Logo" width="100" />
   <h1>🚀 AstroGuide</h1>
   <p><strong>Interactive 3D Space Exploration Application</strong></p>
   
