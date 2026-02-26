@@ -11,6 +11,7 @@ ENV VITE_API_URL=$VITE_API_URL
 COPY package*.json ./
 
 # Installation des dépendances
+RUN apk add --no-cache python3 make g++
 RUN npm install
 
 # Copie du reste des fichiers du projet
