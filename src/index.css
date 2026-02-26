@@ -1,18 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
+
+/* NOTE: La ligne @theme ci-dessous peut s'afficher en orange dans certains éditeurs 
+   qui ne reconnaissent pas encore la nouvelle syntaxe de Tailwind CSS v4. 
+   C'est un simple avertissement visuel, le code est parfaitement valide. */
+@theme {
+  /* On redéfinit le breakpoint 'md' à 1024px. 
+     Ainsi, au lieu de s'appliquer dès 768px (tablette portrait), 
+     le mode bureau ('md:') ne s'activera qu'à 1024px (tablette paysage). */
+  --breakpoint-md: 1024px;
+}
+
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #000;
+    color: #fff;
+    overflow: hidden;
+  }
+
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+}
 
 @layer utilities {
   .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
   }
+
   .custom-scrollbar::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 4px;
   }
+
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background: rgba(16, 185, 129, 0.5);
     border-radius: 4px;
   }
+
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: rgba(16, 185, 129, 0.8);
+  }
+}
+
+/* Empêcher le mode paysage sur mobile */
+/* On cible les écrans jusqu'à 1000px (tous les smartphones max) en paysage */
+@media screen and (max-width: 1000px) and (orientation: landscape) {
+  #root {
+    display: none !important;
+  }
+
+  body::before {
+    content: "Veuillez tourner votre appareil en mode portrait pour utiliser AstroGuide.";
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #030610;
+    color: #fff;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-align: center;
+    padding: 2rem;
+    z-index: 50;
   }
 }

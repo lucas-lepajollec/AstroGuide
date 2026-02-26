@@ -1,46 +1,50 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
-import { useState } from 'react';
 import Scene3D from './components/Scene3D';
-import UIOverlay from './components/UIOverlay';
-import Map2DView from './components/Map2DView';
-import { CelestialObject } from './mockData';
+import Map2D from './components/Map2D';
+import SizeComparison from './components/SizeComparison';
+import Header from './components/Header';
+import SidePanel from './components/SidePanel';
+import NavPanel from './components/NavPanel';
+import { useAstroStore } from './store/useAstroStore';
 import { AnimatePresence } from 'motion/react';
+import LoadingScreen from './components/LoadingScreen';
+import { useState, useEffect } from 'react';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'3d' | 'map'>('3d');
-  const [selectedObject, setSelectedObject] = useState<CelestialObject | null>(null);
+  const currentView = useAstroStore((s) => s.currentView);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Le temps d'affichage de base est de 3 secondes, 
+    // l'effet de fade-out géré par AnimatePresence prendra ensuite le relais.
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="w-screen h-screen overflow-hidden bg-black text-white selection:bg-emerald-500/30">
-      {/* 3D Scene Layer */}
-      <Scene3D
-        onSelectObject={setSelectedObject}
-        selectedObjectId={selectedObject?.id || null}
-      />
+      {/* 3D Scene (always mounted for smooth transitions) */}
+      <Scene3D />
 
-      {/* UI Overlay Layer */}
-      <UIOverlay
-        currentView={currentView}
-        onViewChange={setCurrentView}
-        selectedObject={selectedObject}
-        onClosePanel={() => setSelectedObject(null)}
-      />
+      {/* HUD */}
+      <Header />
 
-      {/* 2D Map Layer */}
+      {/* Left Navigation Panel (visible in all views) */}
+      <NavPanel />
+
+      {/* Right Side Panel (selected details) */}
+      <SidePanel />
+
+      {/* Overlay views */}
       <AnimatePresence>
-        {currentView === 'map' && (
-          <Map2DView
-            onSelectObject={(obj) => {
-              setSelectedObject(obj);
-              setCurrentView('3d');
-            }}
-            onClose={() => setCurrentView('3d')}
-          />
-        )}
+        {currentView === '2D' && <Map2D />}
+        {currentView === 'SIZE' && <SizeComparison />}
+      </AnimatePresence>
+
+      {/* Loading Screen Overlay (highest z-index) */}
+      <AnimatePresence>
+        {isLoading && <LoadingScreen />}
       </AnimatePresence>
     </div>
   );
