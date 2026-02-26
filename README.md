@@ -48,8 +48,8 @@ If deploying via containers, ensure [Docker](https://docs.docker.com/get-docker/
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/astroguide.git
-   cd astroguide
+   git clone https://github.com/lucas-lepajollec/AstroGuide.git
+   cd AstroGuide
    ```
 
 2. **Install dependencies:**
