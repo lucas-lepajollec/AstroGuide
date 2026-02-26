@@ -1,13 +1,6 @@
-version: '3.8'
-
 services:
   astroguide:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      # Vous pouvez passer des arguments de build ici :
-      # args:
-      #   VITE_API_URL: "votre_valeur"
+    image: ghcr.io/lucas-lepajollec/astroguide:latest
     container_name: astroguide-app
     ports:
       - "2502:80"

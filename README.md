@@ -65,33 +65,29 @@ If deploying via containers, ensure [Docker](https://docs.docker.com/get-docker/
 
 ---
 
-## 🐳 Deployment (Docker & NAS)
+## 🐳 Docker Deployment
 
-AstroGuide includes a multi-stage `Dockerfile` (Node builder + Nginx static server) optimized for production, keeping the final image lightweight and fast.
+A pre-built image is published on **GitHub Container Registry** — no need to clone the repo or build anything.
 
-### 1. Build and Run via Docker CLI
+**1. Create a `docker-compose.yml` file:**
 
-You can pass environment variables (like API configurations, if ever needed) during the build phase using `--build-arg`.
-
-```bash
-# Build the image using a specific build argument
-docker build --build-arg VITE_API_URL="https://api.example.com" -t astroguide-app .
-
-# Run the container (Mapping port 2502 on the host to port 80 in Nginx)
-docker run -d -p 2502:80 --name astroguide-instance astroguide-app
+```yaml
+services:
+  astroguide:
+    image: ghcr.io/lucas-lepajollec/astroguide:latest
+    container_name: astroguide-app
+    ports:
+      - "2502:80"
+    restart: unless-stopped
 ```
 
-### 2. Deploy via Docker Compose (Recommended)
+**2. Start the container:**
 
-The provided `docker-compose.yml` makes NAS or Server deployment a one-line process. 
+```bash
+docker compose up -d
+```
 
-1. Review/Edit the `docker-compose.yml` if you need to map a port other than `2502` or pass `args`.
-2. Start the service:
-   ```bash
-   docker-compose up -d --build
-   ```
-
-AstroGuide will now be independently accessible on your server at `http://<YOUR_SERVER_IP>:2502` and will automatically restart on server reboots.
+The app will be available at **http://localhost:2502**.
 
 ---
 
