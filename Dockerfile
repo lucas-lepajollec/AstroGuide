@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:18-alpine AS builder
+FROM node:18-slim AS builder
 
 WORKDIR /app
 
@@ -7,8 +7,8 @@ WORKDIR /app
 ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
 
-# Installation de python3, make et g++ (requis pour node-gyp)
-RUN apk add --no-cache python3 make g++
+# Installation de python3 et build-essential (requis pour node-gyp sur Debian)
+RUN apt-get update && apt-get install -y python3 build-essential
 
 # Copie intégrale de tout le projet en premier
 COPY . .
