@@ -91,11 +91,61 @@ The app will be available at **http://localhost:2502**.
 
 ---
 
+## 📂 Project Structure
+
+```
+AstroGuide/
+├── public/                 # Static assets (3D models, textures, icons)
+├── src/
+│   ├── components/         # UI & 3D components
+│   │   ├── 3d/             # Three.js & Fiber models/scenes
+│   │   ├── ui/             # Reusable UI parts (Tailwind + Lucide)
+│   │   └── ...
+│   ├── data/               # Celestial bodies and constellation data
+│   ├── store/              # Zustand global state store
+│   ├── App.tsx             # Root application component
+│   ├── index.css           # Global Tailwind 4 styles
+│   └── main.tsx            # React DOM entry point
+├── .github/workflows/      # GitHub Actions CI/CD pipelines
+├── Dockerfile              # Multi-stage production build
+├── docker-compose.yml      # Docker Compose deployment setup
+└── package.json            # Dependencies and scripts
+```
+
+---
+
+## 📜 Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server on port 5173 |
+| `npm run build` | Build the project for production with Vite |
+| `npm run preview` | Preview the generated production build locally |
+| `npm run lint` | Type-check project source code with TypeScript |
+| `npm run clean` | Remove `dist/` folder |
+
+---
+
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome! 
-Feel free to check the [issues page](https://github.com/your-username/astroguide/issues) if you have any ideas.
+Contributions are welcome! Feel free to open an issue or submit a pull request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
 
 ## 📝 License
 
 This project is open-source and available under the [MIT License](LICENSE).
+
+---
+
+<div align="center">
+
+Made with ❤️ using React, Three.js & Tailwind CSS
+
+</div>
