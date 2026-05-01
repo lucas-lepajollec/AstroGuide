@@ -1,17 +1,23 @@
 <div align="center">
   <img src="public/logo.svg" alt="AstroGuide Logo" width="100" />
+  
   <h1>🚀 AstroGuide</h1>
   <p><strong>Interactive 3D Space Exploration Application</strong></p>
   
-  [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-  [![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)](https://vitejs.dev/)
-  [![Three.js](https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=three.js&logoColor=white)](https://threejs.org/)
-  [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-  [![Docker](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+  <p>
+    <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" /></a>
+    <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E" alt="Vite" /></a>
+    <a href="https://threejs.org/"><img src="https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=three.js&logoColor=white" alt="Three.js" /></a>
+    <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /></a>
+    <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" /></a>
+    <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" /></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="License" /></a>
+  </p>
 
-  <br />
+  <img src="public/astroguide.png" alt="AstroGuide Interface Screenshot" width="800" />
 </div>
+
+---
 
 AstroGuide is a high-performance, immersive web application designed to explore the cosmos. Built with React and Three.js, it offers a cinematic 3D view of planetary orbits, interactive 2D star maps, and accurate celestial size comparisons.
 
@@ -41,27 +47,27 @@ AstroGuide is a high-performance, immersive web application designed to explore 
 
 ### Prerequisites
 
-Ensure you have [Node.js](https://nodejs.org/) (v18+) and [npm](https://www.npmjs.com/) installed on your machine.
-If deploying via containers, ensure [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) are available.
+- [Node.js](https://nodejs.org/) (v18+) and npm
+- [Docker](https://docs.docker.com/get-docker/) & [Docker Compose](https://docs.docker.com/compose/install/) (for container deployment)
 
 ### Local Development Setup
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/lucas-lepajollec/AstroGuide.git
-   cd AstroGuide
-   ```
+**1. Clone the repository:**
+```bash
+git clone [https://github.com/lucas-lepajollec/AstroGuide.git](https://github.com/lucas-lepajollec/AstroGuide.git)
+cd AstroGuide
+```
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+**2. Install dependencies:**
+```bash
+npm install
+```
 
-3. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
-   *The application will be running at `http://localhost:2499`.*
+**3. Start the development server:**
+```bash
+npm run dev
+```
+*The application will be running at `http://localhost:2499`.*
 
 ---
 
@@ -70,7 +76,6 @@ If deploying via containers, ensure [Docker](https://docs.docker.com/get-docker/
 A pre-built image is published on **GitHub Container Registry** — no need to clone the repo or build anything.
 
 **1. Create a `docker-compose.yml` file:**
-
 ```yaml
 services:
   astroguide:
@@ -92,15 +97,13 @@ The app will be available at **http://localhost:2502**.
 ---
 
 ## 📂 Project Structure
-
-```
+```text
 AstroGuide/
 ├── public/                 # Static assets (3D models, textures, icons)
 ├── src/
 │   ├── components/         # UI & 3D components
 │   │   ├── 3d/             # Three.js & Fiber models/scenes
 │   │   ├── ui/             # Reusable UI parts (Tailwind + Lucide)
-│   │   └── ...
 │   ├── data/               # Celestial bodies and constellation data
 │   ├── store/              # Zustand global state store
 │   ├── App.tsx             # Root application component
@@ -128,24 +131,10 @@ AstroGuide/
 
 ## 🤝 Contributing
 
-Contributions are welcome! Feel free to open an issue or submit a pull request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
----
-
-## 📝 License
-
-This project is open-source and available under the [MIT License](LICENSE).
+Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) to learn how to setup your environment, and our [Code of Conduct](CODE_OF_CONDUCT.md) for details on our community standards.
 
 ---
 
 <div align="center">
-
-Made with ❤️ using React, Three.js & Tailwind CSS
-
+  Made with ❤️ by Lucas Lepajollec
 </div>
