@@ -1,38 +1,34 @@
-# Contributing to Obsidian-Web 💎
+# Contributing to AstroGuide 🚀
 
-Thank you for your interest in improving Obsidian-Web! Whether it's fixing bugs, improving the graph visualization, or adding new editor features, your contributions are welcome.
+First off, thank you for considering contributing to AstroGuide! It's people like you that make the open-source community such a great place to learn, inspire, and create.
 
 ## 🛠️ Local Development Setup
 
-1. **Fork the repository** and clone it locally:
+To get a local copy up and running for development, follow these simple steps:
+
+1. **Fork the repository** on GitHub.
+2. **Clone your fork** locally:
    ```bash
-   git clone https://github.com/YOUR-USERNAME/obsidian-web.git
-   cd obsidian-web
+   git clone https://github.com/YOUR-USERNAME/AstroGuide.git
+   cd AstroGuide
    ```
-2. **Install dependencies**:
+3. **Install dependencies**:
    ```bash
    npm install
    ```
-3. **Environment Setup (Crucial Step)**:
-   You need to link the app to a local Obsidian vault to test it. Create a `.env.local` file at the root:
-   ```env
-   # Point this to a test vault on your computer
-   NOTES_PATH=C:/Users/YourName/Documents/TestVault
-   AUTH_PASSWORD=dev_password
-   ```
-4. **Start the server**:
+4. **Start the development server**:
    ```bash
    npm run dev
    ```
-   Open `http://localhost:3000` to view the app.
-
-## 🧠 Architecture Notes
-- **Frontend**: Next.js App Router with React 19.
-- **Editor**: We use CodeMirror 6. Any new Markdown parsing features should be added via CodeMirror extensions.
-- **Graph**: The force-directed graph is a custom Canvas implementation for performance. 
+   The 3D scene should now be running at `http://localhost:2499`.
 
 ## 📦 Pull Request Process
 
-1. Test your changes against a realistic Obsidian vault (with folders, links, and tags).
-2. Ensure you haven't committed any personal markdown notes in the `/vault` directory.
-3. Submit your PR with a clear description of what you added or fixed.
+1. Ensure any install or build dependencies are removed before the end of the layer when doing a build.
+2. Update the README.md with details of changes to the interface, this includes new environment variables, exposed ports, useful file locations and container parameters.
+3. Keep your PRs small and focused on a single feature or bug fix.
+4. Use Conventional Commits for your commit messages (e.g., `feat: add new planet`, `fix: resolve camera glitch`).
+
+## 🎨 Code Style
+
+We use ESLint and Prettier. Please run `npm run lint` before submitting your pull request to ensure your code matches the project's formatting standards.
