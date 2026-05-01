@@ -9,7 +9,7 @@ To get a local copy up and running for development, follow these simple steps:
 1. **Fork the repository** on GitHub.
 2. **Clone your fork** locally:
    ```bash
-   git clone https://github.com/YOUR-USERNAME/AstroGuide.git
+   git clone https://github.com/lucas-lepajollec/AstroGuide.git
    cd AstroGuide
    ```
 3. **Install dependencies**:
