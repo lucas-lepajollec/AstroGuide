@@ -1,34 +1,43 @@
-# Contributing to AstroGuide 🚀
+# Contribuer à AstroGuide
 
-First off, thank you for considering contributing to AstroGuide! It's people like you that make the open-source community such a great place to learn, inspire, and create.
+Merci de contribuer à AstroGuide. Les changements doivent rester ciblés, vérifiables et accessibles.
 
-## 🛠️ Local Development Setup
+## Préparer l'environnement
 
-To get a local copy up and running for development, follow these simple steps:
+1. Forkez puis clonez le dépôt.
+2. Utilisez Node.js 22.12 ou une version plus récente de la branche 22.
+3. Installez exactement le lockfile et démarrez Vite :
 
-1. **Fork the repository** on GitHub.
-2. **Clone your fork** locally:
-   ```bash
-   git clone https://github.com/lucas-lepajollec/AstroGuide.git
-   cd AstroGuide
-   ```
-3. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-4. **Start the development server**:
-   ```bash
-   npm run dev
-   ```
-   The 3D scene should now be running at `http://localhost:2499`.
+```bash
+npm ci --include=optional
+npm run dev
+```
 
-## 📦 Pull Request Process
+L'application répond sur `http://localhost:2499`.
 
-1. Ensure any install or build dependencies are removed before the end of the layer when doing a build.
-2. Update the README.md with details of changes to the interface, this includes new environment variables, exposed ports, useful file locations and container parameters.
-3. Keep your PRs small and focused on a single feature or bug fix.
-4. Use Conventional Commits for your commit messages (e.g., `feat: add new planet`, `fix: resolve camera glitch`).
+## Avant une pull request
 
-## 🎨 Code Style
+Exécutez la chaîne complète :
 
-We use ESLint and Prettier. Please run `npm run lint` before submitting your pull request to ensure your code matches the project's formatting standards.
+```bash
+npm run check
+```
+
+Pour une modification d'interface, vérifiez au minimum 1440×900, 768×1024, 390×844 et 844×390, ainsi que le clavier et les interactions principales.
+
+Pour une modification du catalogue :
+
+- citez une source scientifique ou institutionnelle dans la pull request ;
+- distinguez diamètre, rayon, masse et étendue ;
+- signalez les estimations incertaines ;
+- mettez à jour les tests d'intégrité si le nombre d'objets change.
+
+## Pull requests
+
+- limitez chaque pull request à un sujet cohérent ;
+- utilisez des commits conventionnels (`feat:`, `fix:`, `docs:`, `test:`…) ;
+- décrivez les validations réellement exécutées ;
+- ajoutez des captures avant/après pour les changements visuels ;
+- ne commettez jamais `.env`, clé API, build `dist/` ou dépendances installées.
+
+Les échanges relèvent du [Code de conduite](CODE_OF_CONDUCT.md). Les vulnérabilités doivent être signalées selon [SECURITY.md](SECURITY.md), pas dans une issue publique.

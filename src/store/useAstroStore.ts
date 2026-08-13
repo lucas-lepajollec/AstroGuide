@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { celestialObjects, type CelestialObject } from '../data/mockData';
+import { celestialObjects, type CelestialObject } from '../data/celestialData';
 
 interface AstroState {
   currentView: '3D' | '2D' | 'SIZE';

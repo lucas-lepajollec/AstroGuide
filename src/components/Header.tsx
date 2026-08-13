@@ -38,6 +38,9 @@ export default function Header() {
                     {/* Hamburger Menu Toggle (Mobile Only) */}
                     <button
                         onClick={() => setNavOpen(!isNavOpen)}
+                        aria-label={isNavOpen ? 'Fermer le menu de navigation' : 'Ouvrir le menu de navigation'}
+                        aria-expanded={isNavOpen}
+                        aria-controls="astro-navigation"
                         className="md:hidden p-2 rounded-lg bg-black/40 backdrop-blur-md border border-white/10 text-white/70 shadow-[0_4px_12px_rgba(0,0,0,0.8)] hover:bg-emerald-500/20 hover:text-emerald-400 transition-colors cursor-pointer"
                     >
                         {isNavOpen ? <X size={20} /> : <Menu size={20} />}
@@ -54,6 +57,7 @@ export default function Header() {
                                     setView(v.key);
                                     setCardVisible(true);
                                 }}
+                                aria-pressed={currentView === v.key}
                                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-mono uppercase tracking-wider transition-all cursor-pointer ${currentView === v.key
                                     ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-300'
                                     : 'text-white/40 hover:text-white/70 border border-transparent'

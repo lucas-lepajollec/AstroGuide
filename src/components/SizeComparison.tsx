@@ -1,8 +1,8 @@
 import { useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { celestialObjects } from '../data/mockData';
+import { celestialObjects } from '../data/celestialData';
 import { useAstroStore } from '../store/useAstroStore';
-import { ChevronLeft, ChevronRight, Maximize2, Route, Telescope, Ruler } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 function typeLabel(type: string) {
     switch (type) {
@@ -114,9 +114,12 @@ export default function SizeComparison() {
                             <p className="text-[9px] font-mono text-white/30 mt-1">
                                 Du plus petit au plus grand • {sorted.length}/{allSorted.length} éléments
                             </p>
+                            <p className="text-[8px] font-mono text-white/20 mt-1">
+                                Diamètres ou étendues approximatifs • taille minimale d’affichage appliquée
+                            </p>
                         </div>
                         {current && (
-                            <span className="text-xs font-mono text-white/30">
+                            <span className="ml-2 shrink-0 whitespace-nowrap text-xs font-mono text-white/30">
                                 #{currentIndex + 1} / {sorted.length}
                             </span>
                         )}
@@ -135,6 +138,7 @@ export default function SizeComparison() {
                             <button
                                 onClick={goPrev}
                                 disabled={currentIndex === 0}
+                                aria-label="Élément plus petit"
                                 className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-2.5 rounded-full bg-black/60 backdrop-blur-md border border-emerald-500/30 hover:bg-emerald-500/20 transition-all disabled:opacity-20 cursor-pointer text-emerald-400 shadow-lg shadow-black/40"
                             >
                                 <ChevronLeft size={18} />
@@ -144,6 +148,7 @@ export default function SizeComparison() {
                             <button
                                 onClick={goNext}
                                 disabled={currentIndex === sorted.length - 1}
+                                aria-label="Élément plus grand"
                                 className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-2.5 rounded-full bg-black/60 backdrop-blur-md border border-emerald-500/30 hover:bg-emerald-500/20 transition-all disabled:opacity-20 cursor-pointer text-emerald-400 shadow-lg shadow-black/40"
                             >
                                 <ChevronRight size={18} />
@@ -167,13 +172,15 @@ export default function SizeComparison() {
                                 <AnimatePresence mode="popLayout">
                                     {/* prev2 (2 steps back) */}
                                     {prev2 && (
-                                        <motion.div
+                                        <motion.button
+                                            type="button"
+                                            aria-label={`Afficher ${prev2.name}`}
                                             key={`p2-${prev2.id}`}
                                             initial={{ opacity: 0, x: -60, scale: 0.5 }}
                                             animate={{ opacity: 1, x: 0, scale: 1 }}
                                             exit={{ opacity: 0, x: -60, scale: 0.5 }}
                                             transition={{ type: 'spring', damping: 22, stiffness: 120 }}
-                                            className="flex flex-col items-center cursor-pointer shrink-0"
+                                            className="hidden sm:flex flex-col items-center cursor-pointer shrink-0"
                                             onClick={goPrev}
                                         >
                                             <div
@@ -258,12 +265,14 @@ export default function SizeComparison() {
                                                 )}
                                             </div>
                                             <p className="text-[10px] font-mono text-white/60 mt-2 text-center max-w-[90px] truncate">{prev2.name}</p>
-                                        </motion.div>
+                                        </motion.button>
                                     )}
 
                                     {/* prev1 (1 step back) */}
                                     {prev1 && (
-                                        <motion.div
+                                        <motion.button
+                                            type="button"
+                                            aria-label={`Afficher ${prev1.name}`}
                                             key={`p1-${prev1.id}`}
                                             initial={{ opacity: 0, x: -40, scale: 0.7 }}
                                             animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -359,7 +368,7 @@ export default function SizeComparison() {
                                                     {(current.sizeKm / prev1.sizeKm).toFixed(1)}× plus petit
                                                 </p>
                                             )}
-                                        </motion.div>
+                                        </motion.button>
                                     )}
 
                                     {/* Current (selected) — always the biggest visually */}

@@ -1,7 +1,16 @@
+name: astroguide
+
 services:
   astroguide:
-    image: ghcr.io/lucas-lepajollec/astroguide:latest
+    build:
+      context: .
+    image: astroguide:local
     container_name: astroguide-app
     ports:
-      - "2502:80"
+      - "2502:8080"
     restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true

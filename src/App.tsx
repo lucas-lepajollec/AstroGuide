@@ -5,25 +5,24 @@ import Header from './components/Header';
 import SidePanel from './components/SidePanel';
 import NavPanel from './components/NavPanel';
 import { useAstroStore } from './store/useAstroStore';
-import { AnimatePresence } from 'motion/react';
+import { AnimatePresence, useReducedMotion } from 'motion/react';
 import LoadingScreen from './components/LoadingScreen';
 import { useState, useEffect } from 'react';
 
 export default function App() {
   const currentView = useAstroStore((s) => s.currentView);
   const [isLoading, setIsLoading] = useState(true);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
-    // Le temps d'affichage de base est de 3 secondes, 
-    // l'effet de fade-out géré par AnimatePresence prendra ensuite le relais.
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 3000);
+    }, prefersReducedMotion ? 150 : 1200);
     return () => clearTimeout(timer);
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
-    <div className="w-screen h-screen overflow-hidden bg-black text-white selection:bg-emerald-500/30">
+    <main className="w-screen h-dvh min-h-[320px] overflow-hidden bg-black text-white selection:bg-emerald-500/30">
       {/* 3D Scene (always mounted for smooth transitions) */}
       <Scene3D />
 
@@ -46,6 +45,6 @@ export default function App() {
       <AnimatePresence>
         {isLoading && <LoadingScreen />}
       </AnimatePresence>
-    </div>
+    </main>
   );
 }

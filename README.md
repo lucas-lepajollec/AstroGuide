@@ -1,140 +1,110 @@
 <div align="center">
-  <img src="public/logo.svg" alt="AstroGuide Logo" width="100" />
-  
-  <h1>🚀 AstroGuide</h1>
-  <p><strong>Interactive 3D Space Exploration Application</strong></p>
-  
-  <p>
-    <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" /></a>
-    <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E" alt="Vite" /></a>
-    <a href="https://threejs.org/"><img src="https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=three.js&logoColor=white" alt="Three.js" /></a>
-    <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /></a>
-    <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" /></a>
-    <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" /></a>
-    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="License" /></a>
-  </p>
-
-  <img src="public/astroguide.png" alt="AstroGuide Interface Screenshot" width="800" />
+  <img src="public/logo.svg" alt="Logo AstroGuide" width="96" />
+  <h1>AstroGuide</h1>
+  <p><strong>Exploration spatiale interactive en 3D, carte illustrative et comparaison de tailles.</strong></p>
+  <img src="public/astroguide.png" alt="Interface AstroGuide" width="800" />
 </div>
 
----
+AstroGuide est une application web statique en français. Elle permet de parcourir un catalogue de 39 objets célestes dans trois vues complémentaires, sans compte, backend ni collecte de données personnelles.
 
-AstroGuide is a high-performance, immersive web application designed to explore the cosmos. Built with React and Three.js, it offers a cinematic 3D view of planetary orbits, interactive 2D star maps, and accurate celestial size comparisons.
+## Fonctionnalités
 
-## ✨ Features
+- exploration 3D avec textures, orbites animées et contrôle de caméra ;
+- carte 2D zoomable et déplaçable, utilisable à la souris ou au tactile ;
+- comparaison de diamètres ou d'étendues approximatifs ;
+- recherche, filtres, constellations et sélection des objets à comparer ;
+- interface adaptée au bureau, à la tablette, au mobile portrait et paysage ;
+- arrêt de la boucle de rendu WebGL lorsque la vue 3D est masquée ;
+- matériaux de secours lorsqu'une texture ne peut pas être chargée.
 
-- **🌐 Immersive 3D Scene**: Explore the solar system, stars, and black holes with realistic textures, lighting, and cinematic orbital camera controls.
-- **🗺️ Interactive 2D Map (Radar)**: A fluid, infinitely zoomable 2D radar map with vector scaling. Pan, zoom, and select constellations up to 20x magnification.
-- **📏 Size Comparison Mode**: Visually compare the exact scale of planets, stars, and galaxies from smallest to largest side-by-side. 
-- **📱 Fully Responsive**: Custom-built mobile interface with off-canvas hamburger menus, bottom sheets, and touch-optimized controls without sacrificing desktop layouts.
-- **⚡ High Performance**: Dynamically halts the WebGL render loop when the 3D scene is inactive, ensuring a perfectly smooth UI even on low-end devices.
+> [!IMPORTANT]
+> AstroGuide est une visualisation pédagogique. Les positions, distances visuelles, orbites et tailles 3D sont illustratives. Les valeurs textuelles sont arrondies, certaines grandeurs astrophysiques restent incertaines, et une taille minimale d'affichage est appliquée dans la comparaison.
 
----
+## Stack
 
-## 🛠️ Tech Stack
+- React 19 et TypeScript strict ;
+- Vite 6 et Tailwind CSS 4 ;
+- Three.js, React Three Fiber et Drei ;
+- Zustand pour l'état ;
+- Motion pour les transitions ;
+- Vitest et ESLint pour les contrôles automatisés ;
+- Nginx non privilégié dans l'image Docker.
 
-| Category         | Technologies Used                                                                 |
-| ---------------- | --------------------------------------------------------------------------------- |
-| **Frontend Core**| React 18, TypeScript, Vite                                                        |
-| **3D Rendering** | Three.js, React Three Fiber (@react-three/fiber), Drei (@react-three/drei)        |
-| **2D / Styling** | Tailwind CSS, Lucide React (Icons), Motion (Animations)                           |
-| **State**        | Zustand (Global State Management)                                                 |
-| **Deployment**   | Docker (Multi-stage build), Nginx                                                 |
+## Prérequis
 
----
+- Node.js 22.12 ou version ultérieure de la branche 22 ;
+- npm 10 ou ultérieur ;
+- Docker avec Docker Compose pour le déploiement conteneurisé.
 
-## 🚀 Getting Started
+## Installation locale
 
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) (v18+) and npm
-- [Docker](https://docs.docker.com/get-docker/) & [Docker Compose](https://docs.docker.com/compose/install/) (for container deployment)
-
-### Local Development Setup
-
-**1. Clone the repository:**
 ```bash
-git clone [https://github.com/lucas-lepajollec/AstroGuide.git](https://github.com/lucas-lepajollec/AstroGuide.git)
+git clone https://github.com/lucas-lepajollec/AstroGuide.git
 cd AstroGuide
-```
-
-**2. Install dependencies:**
-```bash
-npm install
-```
-
-**3. Start the development server:**
-```bash
+npm ci --include=optional
 npm run dev
 ```
-*The application will be running at `http://localhost:2499`.*
 
----
+L'application est ensuite accessible sur `http://localhost:2499` et sur les adresses réseau affichées par Vite.
 
-## 🐳 Docker Deployment
-
-A pre-built image is published on **GitHub Container Registry** — no need to clone the repo or build anything.
-
-**1. Create a `docker-compose.yml` file:**
-```yaml
-services:
-  astroguide:
-    image: ghcr.io/lucas-lepajollec/astroguide:latest
-    container_name: astroguide-app
-    ports:
-      - "2502:80"
-    restart: unless-stopped
-```
-
-**2. Start the container:**
+## Contrôles qualité
 
 ```bash
-docker compose up -d
+npm run check
 ```
 
-The app will be available at **http://localhost:2502**.
+Cette commande exécute le lint réel, la vérification TypeScript, les tests puis le build de production. Les commandes peuvent aussi être lancées séparément :
 
----
+| Commande | Rôle |
+| --- | --- |
+| `npm run lint` | ESLint sans avertissement autorisé |
+| `npm run typecheck` | Vérification TypeScript sans émission |
+| `npm run test` | Tests Vitest |
+| `npm run build` | TypeScript puis build Vite dans `dist/` |
+| `npm run preview` | Prévisualisation du build sur le réseau local |
+| `npm run clean` | Suppression multiplateforme de `dist/` |
 
-## 📂 Project Structure
+## Docker
+
+Construction locale reproductible depuis le lockfile :
+
+```bash
+docker compose up --build -d
+```
+
+AstroGuide répond alors sur `http://localhost:2502`. Le conteneur s'exécute sans privilèges, avec un système de fichiers en lecture seule, un healthcheck et des en-têtes HTTP de sécurité.
+
+Le workflow GitHub publie également `ghcr.io/lucas-lepajollec/astroguide` après les validations des poussées sur `main` et des tags `v*`. La disponibilité d'une architecture donnée dépend de la dernière exécution de publication réussie.
+
+## Structure réelle
+
 ```text
 AstroGuide/
-├── public/                 # Static assets (3D models, textures, icons)
+├── .github/                 # modèles et workflows CI / image
+├── public/                  # logo, capture et textures
 ├── src/
-│   ├── components/         # UI & 3D components
-│   │   ├── 3d/             # Three.js & Fiber models/scenes
-│   │   ├── ui/             # Reusable UI parts (Tailwind + Lucide)
-│   ├── data/               # Celestial bodies and constellation data
-│   ├── store/              # Zustand global state store
-│   ├── App.tsx             # Root application component
-│   ├── index.css           # Global Tailwind 4 styles
-│   └── main.tsx            # React DOM entry point
-├── .github/workflows/      # GitHub Actions CI/CD pipelines
-├── Dockerfile              # Multi-stage production build
-├── docker-compose.yml      # Docker Compose deployment setup
-└── package.json            # Dependencies and scripts
+│   ├── components/         # vues 3D, 2D, comparaison et interface
+│   ├── data/               # catalogue céleste et tests d'intégrité
+│   ├── store/              # état Zustand et tests
+│   ├── App.tsx
+│   ├── index.css
+│   └── main.tsx
+├── Dockerfile
+├── docker-compose.yml
+├── nginx.conf
+└── package.json
 ```
 
----
+## Données et limites scientifiques
 
-## 📜 Available Scripts
+Les ordres de grandeur proviennent principalement des ressources de la [NASA consacrées au Système solaire](https://science.nasa.gov/solar-system/), des [résultats scientifiques de l'Event Horizon Telescope sur M87*](https://arxiv.org/abs/1906.11243), des observations NASA de [Bételgeuse](https://science.nasa.gov/universe/what-is-betelgeuse-inside-the-strange-volatile-star/) et des informations [Hubble/Gaia sur l'avenir de la Voie lactée et d'Andromède](https://science.nasa.gov/missions/hubble/apocalypse-when-hubble-casts-doubt-on-certainty-of-galactic-collision/).
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server on port 2499 |
-| `npm run build` | Build the project for production with Vite |
-| `npm run preview` | Preview the generated production build locally |
-| `npm run lint` | Type-check project source code with TypeScript |
-| `npm run clean` | Remove `dist/` folder |
+Les masses de trous noirs lointains sont des estimations dépendantes des modèles. Phoenix A est explicitement présenté comme un candidat très incertain. Les contributions qui modifient le catalogue doivent citer une source scientifique ou institutionnelle et conserver les unités cohérentes.
 
----
+## Confidentialité et sécurité
 
-## 🤝 Contributing
+L'application n'utilise ni cookie, ni stockage local, ni analytique, ni API distante. Elle n'a besoin d'aucune variable d'environnement ou clé API. Consultez [SECURITY.md](SECURITY.md) pour signaler une vulnérabilité.
 
-Contributions are welcome! Please read our [Contributing Guidelines](CONTRIBUTING.md) to learn how to setup your environment, and our [Code of Conduct](CODE_OF_CONDUCT.md) for details on our community standards.
+## Contribution et licence
 
----
-
-<div align="center">
-  Made with ❤️ by Lucas Lepajollec
-</div>
+Les contributions sont bienvenues : voir [CONTRIBUTING.md](CONTRIBUTING.md) et [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). AstroGuide est distribué sous licence [MIT](LICENSE).

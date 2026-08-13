@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAstroStore } from '../store/useAstroStore';
-import { celestialObjects, type CelestialObject } from '../data/mockData';
+import { celestialObjects, type CelestialObject } from '../data/celestialData';
 import {
     ChevronLeft,
     ChevronRight,
@@ -58,6 +58,14 @@ export default function NavPanel() {
     const [activeFilter, setActiveFilter] = useState<FilterType>('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia('(max-width: 1023px)').matches);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(max-width: 1023px)');
+        const updateLayout = () => setIsMobileLayout(mediaQuery.matches);
+        mediaQuery.addEventListener('change', updateLayout);
+        return () => mediaQuery.removeEventListener('change', updateLayout);
+    }, []);
 
     const isSizeView = currentView === 'SIZE';
 
@@ -107,7 +115,12 @@ export default function NavPanel() {
     const activeFilterObj = filters.find((f) => f.key === activeFilter)!;
 
     return (
-        <div className={`fixed z-50 bg-black/90 md:bg-black/70 backdrop-blur-xl flex flex-col transition-all duration-300 transform-gpu
+        <aside
+            id="astro-navigation"
+            aria-label="Navigation des objets célestes"
+            aria-hidden={isMobileLayout && !isNavOpen}
+            inert={isMobileLayout && !isNavOpen ? true : undefined}
+            className={`fixed z-50 bg-black/90 md:bg-black/70 backdrop-blur-xl flex flex-col transition-all duration-300 transform-gpu
             md:left-0 md:top-24 md:bottom-0 md:w-[220px] md:border-r md:border-white/8 md:rounded-none md:opacity-100 md:scale-100 md:pointer-events-auto
             ${isNavOpen
                 ? 'inset-x-4 top-24 bottom-4 rounded-2xl border border-white/10 opacity-100 scale-100 pointer-events-auto'
@@ -119,18 +132,21 @@ export default function NavPanel() {
                 <div className="flex items-center gap-1 p-1 rounded-full bg-black/40 border border-white/10">
                     <button
                         onClick={() => { setView('3D'); setNavOpen(false); setCardVisible(true); }}
+                        aria-pressed={currentView === '3D'}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-mono uppercase tracking-wider transition-all cursor-pointer ${currentView === '3D' ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-300' : 'text-white/40 hover:text-white/70 border border-transparent'}`}
                     >
                         <Orbit size={14} /> <span>3D</span>
                     </button>
                     <button
                         onClick={() => { setView('2D'); setNavOpen(false); setCardVisible(true); }}
+                        aria-pressed={currentView === '2D'}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-mono uppercase tracking-wider transition-all cursor-pointer ${currentView === '2D' ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-300' : 'text-white/40 hover:text-white/70 border border-transparent'}`}
                     >
                         <MapIcon size={14} /> <span>Carte</span>
                     </button>
                     <button
                         onClick={() => { setView('SIZE'); setNavOpen(false); setCardVisible(true); }}
+                        aria-pressed={currentView === 'SIZE'}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-mono uppercase tracking-wider transition-all cursor-pointer ${currentView === 'SIZE' ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-300' : 'text-white/40 hover:text-white/70 border border-transparent'}`}
                     >
                         <Scaling size={14} /> <span>Taille</span>
@@ -142,6 +158,7 @@ export default function NavPanel() {
             <div className="flex items-center justify-between px-3 py-2.5 border-b border-white/5">
                 <button
                     onClick={goPrev}
+                    aria-label="Objet précédent"
                     className="p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-emerald-500/15 hover:border-emerald-500/30 transition-all cursor-pointer"
                 >
                     <ChevronLeft size={14} className="text-emerald-400" />
@@ -153,6 +170,7 @@ export default function NavPanel() {
                 </span>
                 <button
                     onClick={goNext}
+                    aria-label="Objet suivant"
                     className="p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-emerald-500/15 hover:border-emerald-500/30 transition-all cursor-pointer"
                 >
                     <ChevronRight size={14} className="text-emerald-400" />
@@ -162,8 +180,10 @@ export default function NavPanel() {
             {/* Search Bar */}
             <div className="px-2.5 py-2 border-b border-white/5">
                 <div className="relative">
+                    <label htmlFor="astro-search" className="sr-only">Rechercher un objet céleste</label>
                     <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-white/25" />
                     <input
+                        id="astro-search"
                         type="text"
                         placeholder="Rechercher..."
                         value={searchQuery}
@@ -177,6 +197,8 @@ export default function NavPanel() {
             <div className="px-2.5 py-2 border-b border-white/5 relative">
                 <button
                     onClick={() => setDropdownOpen(!dropdownOpen)}
+                    aria-expanded={dropdownOpen}
+                    aria-haspopup="menu"
                     className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/8 text-[10px] font-mono text-white/60 hover:bg-white/8 transition-all cursor-pointer"
                 >
                     <span className="flex items-center gap-1.5">
@@ -186,10 +208,12 @@ export default function NavPanel() {
                     <ChevronDown size={12} className={`text-white/30 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
                 {dropdownOpen && (
-                    <div className="absolute left-2.5 right-2.5 top-full mt-1 bg-black/95 backdrop-blur-xl border border-white/10 rounded-lg overflow-hidden z-50 shadow-xl">
+                    <div role="menu" className="absolute left-2.5 right-2.5 top-full mt-1 bg-black/95 backdrop-blur-xl border border-white/10 rounded-lg overflow-hidden z-50 shadow-xl">
                         {filters.map((f) => (
                             <button
                                 key={f.key}
+                                role="menuitemradio"
+                                aria-checked={activeFilter === f.key}
                                 onClick={() => {
                                     setActiveFilter(f.key);
                                     setDropdownOpen(false);
@@ -252,20 +276,26 @@ export default function NavPanel() {
                     ))
                 ) : (
                     // Flat list (filtered + searched)
-                    filteredObjects.map((obj) => (
-                        <ObjectRow
-                            key={obj.id}
-                            obj={obj}
-                            isActive={selectedAstro?.id === obj.id}
-                            isSizeView={isSizeView}
-                            isIncluded={comparisonIds.has(obj.id)}
-                            onSelect={navigateTo}
-                            onToggle={toggleComparisonId}
-                        />
-                    ))
+                    filteredObjects.length > 0 ? (
+                        filteredObjects.map((obj) => (
+                            <ObjectRow
+                                key={obj.id}
+                                obj={obj}
+                                isActive={selectedAstro?.id === obj.id}
+                                isSizeView={isSizeView}
+                                isIncluded={comparisonIds.has(obj.id)}
+                                onSelect={navigateTo}
+                                onToggle={toggleComparisonId}
+                            />
+                        ))
+                    ) : (
+                        <p role="status" className="px-4 py-8 text-center text-[11px] font-mono text-white/40">
+                            Aucun objet ne correspond à cette recherche.
+                        </p>
+                    )
                 )}
             </div>
-        </div>
+        </aside>
     );
 }
 
@@ -299,6 +329,8 @@ function ObjectRow({
                         e.stopPropagation();
                         onToggle(obj.id);
                     }}
+                    aria-pressed={isIncluded}
+                    aria-label={`${isIncluded ? 'Retirer' : 'Ajouter'} ${obj.name} de la comparaison`}
                     className={`w-3.5 h-3.5 rounded border shrink-0 flex items-center justify-center transition-all cursor-pointer ${isIncluded
                         ? 'bg-emerald-500/30 border-emerald-500/50'
                         : 'bg-white/5 border-white/15'
@@ -311,6 +343,7 @@ function ObjectRow({
             {/* Main clickable area */}
             <button
                 onClick={() => onSelect(obj)}
+                aria-current={isActive ? 'true' : undefined}
                 className="flex-1 flex items-center gap-2 min-w-0 cursor-pointer"
             >
                 <div

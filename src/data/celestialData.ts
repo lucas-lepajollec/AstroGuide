@@ -19,6 +19,7 @@ export interface CelestialObject {
     position: [number, number, number];
     scientificSize: string;
     relativeSize: string;
+    relativeSizeLabel?: string;
     scientificDistance: string;
     relativeDistance: string;
     description: string;
@@ -27,7 +28,7 @@ export interface CelestialObject {
     orbitalRadius?: number;
     orbitalSpeed?: number;
     orbitalOffset?: number;
-    sizeKm: number; // numeric size in km for comparison sorting
+    sizeKm: number; // approximate diameter or extent in km, used for comparison sorting
     hideIn3D?: boolean; // if true, no 3D mesh is rendered (only label)
     systemCircle?: boolean; // if true, draw a circle on 2D map around solar system bodies
     parentId?: string; // for moon: orbits around this object
@@ -116,7 +117,7 @@ export const celestialObjects: CelestialObject[] = [
         position: [44, 0, 0], sizeKm: 50_724,
         scientificSize: '50 724 km', relativeSize: '4× la Terre',
         scientificDistance: '2,9 milliards km', relativeDistance: '2,6 heures-lumière du Soleil',
-        description: "Une géante de glaces. Elle orbite couchée sur le côté en raison d'un impact massif dans son passé.",
+        description: "Une géante de glaces qui tourne presque couchée sur son orbite. L'origine de cette inclinaison extrême reste débattue.",
         orbitalRadius: 44, orbitalSpeed: 0.02, orbitalOffset: 2.5,
         textureUrl: '/textures/uranus.jpg',
     },
@@ -140,8 +141,9 @@ export const celestialObjects: CelestialObject[] = [
     // Système Solaire — virtual group
     {
         id: 'solar-system', name: 'Système Solaire', type: 'system', color: '#FFD700',
-        position: [0, 0, 0], sizeKm: 18_000_000_000,
-        scientificSize: '~120 UA (~18 milliards km)', relativeSize: 'Contient 8 planètes + 1 naine',
+        position: [0, 0, 0], sizeKm: 36_000_000_000,
+        scientificSize: '~240 UA (~36 milliards km)', relativeSize: 'Diamètre approximatif de l’héliosphère',
+        relativeSizeLabel: 'Étendue retenue',
         scientificDistance: '0 km', relativeDistance: 'Notre système',
         description: "Notre système planétaire avec le Soleil au centre, 8 planètes, des planètes naines et des milliards de petits corps.",
         hideIn3D: true,
@@ -166,7 +168,7 @@ export const celestialObjects: CelestialObject[] = [
         position: [-90, 40, 100], sizeKm: 1_200_000_000,
         scientificSize: '1,2 milliards km', relativeSize: '764× le Soleil',
         scientificDistance: '6 millions de milliards km', relativeDistance: '640 Années-Lumière',
-        description: "Supergéante rouge en fin de vie. Si elle remplaçait le Soleil, elle engloutirait Jupiter.",
+        description: "Supergéante rouge en fin de vie. Placée au centre du Système solaire, son atmosphère externe pourrait s'étendre au-delà de l'orbite de Jupiter.",
         constellation: 'Orion',
         shape: 'tinyStar',
         textureUrl: '/textures/sun.jpg',
@@ -185,7 +187,7 @@ export const celestialObjects: CelestialObject[] = [
         id: 'bellatrix', name: 'Bellatrix', type: 'star', color: '#B0D0FF',
         position: [-85, 35, 95], sizeKm: 8_400_000,
         scientificSize: '8,4 millions km', relativeSize: '6× le Soleil',
-        scientificDistance: '250 Années-Lumière', relativeDistance: '~15 millions de milliards km',
+        scientificDistance: '~2,4 millions de milliards km', relativeDistance: '~250 années-lumière',
         description: "L'épaule gauche d'Orion. Géante bleue dont le nom signifie « guerrière » en latin.",
         constellation: 'Orion',
         shape: 'tinyStar',
@@ -265,7 +267,7 @@ export const celestialObjects: CelestialObject[] = [
         id: 'dubhe', name: 'Dubhé', type: 'star', color: '#FFD700',
         position: [85, 60, -80], sizeKm: 23_000_000,
         scientificSize: '23 millions km', relativeSize: '17× le Soleil',
-        scientificDistance: '124 Années-Lumière', relativeDistance: '~7,6 millions de milliards km',
+        scientificDistance: '~1,2 million de milliards km', relativeDistance: '~124 années-lumière',
         description: "Alpha Ursae Majoris. Avec Merak, elles forment les « Pointeurs » vers l'Étoile Polaire.",
         constellation: 'Grande Ourse',
         shape: 'tinyStar',
@@ -275,7 +277,7 @@ export const celestialObjects: CelestialObject[] = [
         id: 'merak', name: 'Merak', type: 'star', color: '#FFFACD',
         position: [82, 52, -78], sizeKm: 4_200_000,
         scientificSize: '4,2 millions km', relativeSize: '3× le Soleil',
-        scientificDistance: '79 Années-Lumière', relativeDistance: '~4,8 millions de milliards km',
+        scientificDistance: '~750 000 milliards km', relativeDistance: '~79 années-lumière',
         description: "Beta Ursae Majoris. Avec Dubhé, elle pointe vers la Polaire. Possède un disque de débris.",
         constellation: 'Grande Ourse',
         shape: 'tinyStar',
@@ -285,7 +287,7 @@ export const celestialObjects: CelestialObject[] = [
         id: 'alioth', name: 'Alioth', type: 'star', color: '#E0E7FF',
         position: [90, 55, -74], sizeKm: 5_600_000,
         scientificSize: '5,6 millions km', relativeSize: '4× le Soleil',
-        scientificDistance: '81 Années-Lumière', relativeDistance: '~5 millions de milliards km',
+        scientificDistance: '~770 000 milliards km', relativeDistance: '~81 années-lumière',
         description: "L'étoile la plus brillante de la Grande Ourse. Étoile magnétiquement variable.",
         constellation: 'Grande Ourse',
         shape: 'tinyStar',
@@ -295,7 +297,7 @@ export const celestialObjects: CelestialObject[] = [
         id: 'schedar', name: 'Schedar', type: 'star', color: '#FF8C00',
         position: [-80, 80, 70], sizeKm: 56_000_000,
         scientificSize: '56 millions km', relativeSize: '42× le Soleil',
-        scientificDistance: '228 Années-Lumière', relativeDistance: '~14 millions de milliards km',
+        scientificDistance: '~2,2 millions de milliards km', relativeDistance: '~228 années-lumière',
         description: "Alpha Cassiopeiae. Géante orange qui ancre le W caractéristique de Cassiopée.",
         constellation: 'Cassiopée',
         shape: 'tinyStar',
@@ -305,7 +307,7 @@ export const celestialObjects: CelestialObject[] = [
         id: 'caph', name: 'Caph', type: 'star', color: '#F0F0FF',
         position: [-74, 88, 76], sizeKm: 5_000_000,
         scientificSize: '5 millions km', relativeSize: '3,5× le Soleil',
-        scientificDistance: '54 Années-Lumière', relativeDistance: '~3,3 millions de milliards km',
+        scientificDistance: '~510 000 milliards km', relativeDistance: '~54 années-lumière',
         description: "Beta Cassiopeiae. Étoile variable pulsant toutes les 2,5 heures. Extrémité droite du W.",
         constellation: 'Cassiopée',
         shape: 'tinyStar',
@@ -315,7 +317,7 @@ export const celestialObjects: CelestialObject[] = [
         id: 'navi', name: 'Navi', type: 'star', color: '#ADD8E6',
         position: [-77, 84, 73], sizeKm: 14_000_000,
         scientificSize: '14 millions km', relativeSize: '10× le Soleil',
-        scientificDistance: '610 Années-Lumière', relativeDistance: '~37 millions de milliards km',
+        scientificDistance: '~5,8 millions de milliards km', relativeDistance: '~610 années-lumière',
         description: "Gamma Cassiopeiae. Étoile éruptive nommée en honneur inversé de l'astronaute Gus « Ivan » Grissom.",
         constellation: 'Cassiopée',
         shape: 'tinyStar',
@@ -327,8 +329,9 @@ export const celestialObjects: CelestialObject[] = [
     // ═══════════════════════════════════════════
     {
         id: 'sagittarius-a', name: 'Sagittarius A*', type: 'blackhole', color: '#1A1A2E',
-        position: [0, 0, 160], sizeKm: 44_000_000,
-        scientificSize: '44 millions km', relativeSize: '4 Millions × masse du Soleil',
+        position: [0, 0, 160], sizeKm: 25_000_000,
+        scientificSize: '~25 millions km (diamètre de Schwarzschild)', relativeSize: '~4,3 millions de masses solaires',
+        relativeSizeLabel: 'Masse estimée',
         scientificDistance: '26 000 Années-Lumière', relativeDistance: 'Centre de notre Galaxie',
         description: "Le trou noir supermassif au centre de la Voie Lactée. L'ancre gravitationnelle de notre galaxie.",
         shape: 'blackhole',
@@ -337,43 +340,48 @@ export const celestialObjects: CelestialObject[] = [
     {
         id: 'm87-bh', name: 'M87*', type: 'blackhole', color: '#1A0505',
         position: [140, 70, -170], sizeKm: 38_000_000_000,
-        scientificSize: '38 milliards km', relativeSize: '6,5 Milliards × masse du Soleil',
+        scientificSize: '~38 milliards km (diamètre de Schwarzschild)', relativeSize: '~6,5 milliards de masses solaires',
+        relativeSizeLabel: 'Masse estimée',
         scientificDistance: "55 Millions d'AL", relativeDistance: 'Extrêmement lointain',
-        description: "Premier trou noir photographié par l'humanité (2019). Un monstre crachant un jet de plasma.",
+        description: "Premier trou noir dont l'ombre a été imagée par l'Event Horizon Telescope en 2019. Sa galaxie produit un puissant jet relativiste.",
         shape: 'blackhole',
         textureUrl: '/textures/black-hole-comparaison.jpg',
     },
     {
         id: 'ton-618', name: 'TON 618', type: 'blackhole', color: '#0A0A1A',
-        position: [-180, -100, 200], sizeKm: 390_000_000_000,
-        scientificSize: '390 milliards km', relativeSize: '66 Milliards × masse du Soleil',
+        position: [-180, -100, 200], sizeKm: 240_000_000_000,
+        scientificSize: '~240 milliards km (estimation)', relativeSize: '~40,7 milliards de masses solaires',
+        relativeSizeLabel: 'Masse estimée',
         scientificDistance: "10,4 Milliards d'AL", relativeDistance: "Aux confins de l'univers",
-        description: "Le plus grand trou noir connu. 40× plus large que le système solaire.",
+        description: "L'un des trous noirs les plus massifs connus, au cœur d'un quasar très lointain. Sa masse est estimée indirectement et varie selon la méthode employée.",
         shape: 'blackhole',
         textureUrl: '/textures/black-hole-comparaison.jpg',
     },
     {
         id: 'cygnus-x1', name: 'Cygnus X-1', type: 'blackhole', color: '#0A0A1A',
         position: [100, 80, 65], sizeKm: 125,
-        scientificSize: '125 km (Horizon)', relativeSize: '21× masse du Soleil',
+        scientificSize: '~125 km (diamètre de Schwarzschild)', relativeSize: '~21 masses solaires',
+        relativeSizeLabel: 'Masse estimée',
         scientificDistance: '6 000 AL', relativeDistance: 'Dans notre galaxie',
         description: "Premier trou noir stellaire découvert. Aspire le gaz de son étoile compagne.",
         shape: 'blackhole',
         textureUrl: '/textures/black-hole-comparaison.jpg',
     },
     {
-        id: 'phoenix-a', name: 'Phoenix A*', type: 'blackhole', color: '#050011',
+        id: 'phoenix-a', name: 'Phoenix A (candidat)', type: 'blackhole', color: '#050011',
         position: [170, -140, -190], sizeKm: 590_000_000_000,
-        scientificSize: '590 milliards km', relativeSize: '100 Milliards × masse du Soleil',
-        scientificDistance: "8,5 Milliards d'AL", relativeDistance: "Au bord de l'univers observable",
-        description: "Nouveau candidat au titre de « plus grand trou noir de l'univers ».",
+        scientificSize: '~590 milliards km (hypothèse)', relativeSize: '~100 milliards de masses solaires, très incertain',
+        relativeSizeLabel: 'Masse indirecte proposée',
+        scientificDistance: "~5,8 milliards d'années-lumière (temps de parcours)", relativeDistance: "Amas du Phénix, z≈0,596",
+        description: "Trou noir central de l'amas du Phénix. La valeur de 100 milliards de masses solaires est une extrapolation indirecte, pas une mesure robuste.",
         shape: 'blackhole',
         textureUrl: '/textures/black-hole-comparaison.jpg',
     },
     {
         id: 'v404-cygni', name: 'V404 Cygni', type: 'blackhole', color: '#0A0A1A',
         position: [-110, 45, -100], sizeKm: 55,
-        scientificSize: '55 km', relativeSize: '9× masse du Soleil',
+        scientificSize: '~55 km (diamètre de Schwarzschild)', relativeSize: '~9 masses solaires',
+        relativeSizeLabel: 'Masse estimée',
         scientificDistance: '7 800 AL', relativeDistance: 'Dans notre galaxie',
         description: "Un trou noir binaire connu pour ses éruptions violentes de rayons X.",
         shape: 'blackhole',
@@ -381,8 +389,9 @@ export const celestialObjects: CelestialObject[] = [
     },
     {
         id: 'oj-287', name: 'OJ 287 (Binaire)', type: 'blackhole', color: '#110000',
-        position: [130, -40, 150], sizeKm: 18_000_000_000,
-        scientificSize: 'Système Binaire Massif', relativeSize: '18 Milliards × masse du Soleil',
+        position: [130, -40, 150], sizeKm: 106_000_000_000,
+        scientificSize: '~106 milliards km (trou noir primaire)', relativeSize: '~18 milliards de masses solaires',
+        relativeSizeLabel: 'Masse du primaire',
         scientificDistance: "3,5 Milliards d'AL", relativeDistance: 'Galaxie Lointaine',
         description: "DEUX trous noirs supermassifs orbitant l'un autour de l'autre.",
         shape: 'blackhole',
@@ -395,16 +404,16 @@ export const celestialObjects: CelestialObject[] = [
     {
         id: 'andromeda', name: "Galaxie d'Andromède", type: 'galaxy', color: '#D1D1FF',
         position: [200, 60, 150], sizeKm: 2_080_000_000_000_000_000,
-        scientificSize: "220 000 AL de large", relativeSize: '2× la Voie Lactée',
+        scientificSize: "~220 000 AL de large", relativeSize: '~2× le diamètre de la Voie Lactée',
         scientificDistance: "2,5 Millions d'AL", relativeDistance: 'Notre voisine cosmique',
-        description: "Galaxie spirale géante fonçant vers nous à 110 km/s. Fusionnera avec la Voie Lactée dans 4 milliards d'années.",
+        description: "Grande galaxie spirale qui se rapproche de la Voie Lactée. Les données Hubble et Gaia indiquent environ une chance sur deux de collision directe dans les 10 prochains milliards d'années.",
         shape: 'disc',
         textureUrl: '/textures/galaxie.png',
     },
     {
         id: 'sombrero', name: 'Galaxie du Sombrero', type: 'galaxy', color: '#FFF0D4',
         position: [-190, 30, -160], sizeKm: 473_000_000_000_000_000,
-        scientificSize: "50 000 AL de large", relativeSize: '0,3× la Voie Lactée',
+        scientificSize: "~50 000 AL de large", relativeSize: '~0,5× le diamètre de la Voie Lactée',
         scientificDistance: "31 Millions d'AL", relativeDistance: 'Amas de la Vierge',
         description: "Reconnaissable à son renflement central lumineux et sa bande de poussière sombre.",
         shape: 'disc',
@@ -413,7 +422,7 @@ export const celestialObjects: CelestialObject[] = [
     {
         id: 'whirlpool', name: 'Galaxie du Tourbillon', type: 'galaxy', color: '#C8A0FF',
         position: [160, -55, -200], sizeKm: 719_000_000_000_000_000,
-        scientificSize: "76 000 AL de large", relativeSize: '0,5× la Voie Lactée',
+        scientificSize: "~76 000 AL de large", relativeSize: '~0,75× le diamètre de la Voie Lactée',
         scientificDistance: "23 Millions d'AL", relativeDistance: 'Chiens de Chasse',
         description: "Galaxie spirale en interaction avec une galaxie compagne. Bras spectaculaires.",
         shape: 'disc',

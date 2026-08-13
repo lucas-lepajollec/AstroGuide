@@ -14,5 +14,8 @@
 - [ ] I have commented my code, particularly in hard-to-understand areas
 - [ ] I have made corresponding changes to the documentation
 - [ ] My changes generate no new warnings
+- [ ] I ran `npm run check`
+- [ ] I added or updated tests when behavior changed
+- [ ] I verified accessibility and responsive layouts when the interface changed
 
 ## Screenshots (if appropriate):

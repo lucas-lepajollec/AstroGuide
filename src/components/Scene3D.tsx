@@ -1,8 +1,8 @@
-import React, { useRef, useMemo, useEffect, Suspense, useState } from 'react';
+import React, { useRef, useMemo, useEffect, Suspense } from 'react';
 import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber';
-import { OrbitControls, Stars, Html, Billboard, MeshDistortMaterial } from '@react-three/drei';
+import { OrbitControls, Stars, Html, Billboard } from '@react-three/drei';
 import * as THREE from 'three';
-import { celestialObjects, constellationLines, type CelestialObject } from '../data/mockData';
+import { celestialObjects, constellationLines, type CelestialObject } from '../data/celestialData';
 import { useAstroStore } from '../store/useAstroStore';
 
 /* ── Error Boundary for Textures ─────────────── */
@@ -24,16 +24,7 @@ class TextureErrorBoundary extends React.Component<{ fallback: React.ReactNode, 
   }
 }
 
-/* ── Textured Material Sub-component ──────────── */
-function TexturedMaterial({
-  color,
-  textureUrl,
-  emissive,
-  emissiveIntensity,
-  roughness,
-  toneMapped = true,
-  isStar = false
-}: {
+type TexturedMaterialProps = {
   color: string;
   textureUrl?: string;
   emissive: string;
@@ -41,27 +32,39 @@ function TexturedMaterial({
   roughness: number;
   toneMapped?: boolean;
   isStar?: boolean;
-}) {
-  const { gl } = useThree();
-  const texture = textureUrl ? useLoader(THREE.TextureLoader, textureUrl) as THREE.Texture : null;
+};
 
-  if (texture) {
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.anisotropy = gl.capabilities.getMaxAnisotropy();
-    texture.minFilter = THREE.LinearFilter; // Évite le flou du mipmap sur les grosses textures
-    texture.magFilter = THREE.LinearFilter;
-    texture.generateMipmaps = false;
-  }
+function useConfiguredTexture(textureUrl: string) {
+  const { gl } = useThree();
+  const sourceTexture = useLoader(THREE.TextureLoader, textureUrl) as THREE.Texture;
+  return useMemo(() => {
+    const configuredTexture = sourceTexture.clone();
+    configuredTexture.colorSpace = THREE.SRGBColorSpace;
+    configuredTexture.anisotropy = gl.capabilities.getMaxAnisotropy();
+    configuredTexture.minFilter = THREE.LinearFilter;
+    configuredTexture.magFilter = THREE.LinearFilter;
+    configuredTexture.generateMipmaps = false;
+    configuredTexture.needsUpdate = true;
+    return configuredTexture;
+  }, [sourceTexture, gl]);
+}
+
+function LoadedTexturedMaterial({
+  textureUrl,
+  toneMapped = true,
+  isStar = false,
+}: TexturedMaterialProps & { textureUrl: string }) {
+  const texture = useConfiguredTexture(textureUrl);
 
   if (isStar) {
     return (
       <meshStandardMaterial
-        color={texture ? '#ffffff' : color}
-        map={texture || null}
-        emissive={texture ? '#ffffff' : emissive}
-        emissiveMap={texture ? texture : null}
-        emissiveIntensity={texture ? 1.5 : emissiveIntensity}
-        roughness={texture ? 1 : roughness}
+        color="#ffffff"
+        map={texture}
+        emissive="#ffffff"
+        emissiveMap={texture}
+        emissiveIntensity={1.5}
+        roughness={1}
         metalness={0}
         toneMapped={toneMapped}
       />
@@ -70,21 +73,38 @@ function TexturedMaterial({
 
   return (
     <meshStandardMaterial
-      color={texture ? '#ffffff' : color}
-      map={texture || null}
-      emissive={texture ? (isStar ? '#ffffff' : '#000000') : emissive}
-      emissiveMap={texture && isStar ? texture : null}
-      emissiveIntensity={texture ? (isStar ? 1.5 : 0) : emissiveIntensity}
-      roughness={texture ? (isStar ? 1 : 0.3) : roughness}
-      metalness={texture ? (isStar ? 0 : 0.1) : 0}
+      color="#ffffff"
+      map={texture}
+      emissive="#000000"
+      emissiveIntensity={0}
+      roughness={0.3}
+      metalness={0.1}
       toneMapped={toneMapped}
+    />
+  );
+}
+
+/* ── Textured Material Sub-component ──────────── */
+function TexturedMaterial(props: TexturedMaterialProps) {
+  if (props.textureUrl) {
+    return <LoadedTexturedMaterial {...props} textureUrl={props.textureUrl} />;
+  }
+
+  return (
+    <meshStandardMaterial
+      color={props.color}
+      emissive={props.emissive}
+      emissiveIntensity={props.emissiveIntensity}
+      roughness={props.roughness}
+      metalness={0}
+      toneMapped={props.toneMapped ?? true}
     />
   );
 }
 
 function TinyStarMaterial({ color, textureUrl }: { color: string, textureUrl: string }) {
   const { gl } = useThree();
-  const texture = useLoader(THREE.TextureLoader, textureUrl) as THREE.Texture;
+  const texture = useConfiguredTexture(textureUrl);
 
   const grayscaleTexture = useMemo(() => {
     if (!texture || !texture.image) return texture;
@@ -131,21 +151,29 @@ function TinyStarMaterial({ color, textureUrl }: { color: string, textureUrl: st
 }
 
 /* ── Transparent Basic Material ───────────────── */
+function LoadedTransparentBasicMaterial({ textureUrl, blending }: { textureUrl: string, blending?: THREE.Blending }) {
+  const texture = useConfiguredTexture(textureUrl);
+  return (
+    <meshBasicMaterial
+      map={texture}
+      color="#ffffff"
+      transparent={true}
+      blending={blending || THREE.NormalBlending}
+      side={THREE.DoubleSide}
+      depthWrite={false}
+      toneMapped={false}
+    />
+  );
+}
+
 function TransparentBasicMaterial({ textureUrl, color, blending }: { textureUrl?: string, color: string, blending?: THREE.Blending }) {
-  const { gl } = useThree();
-  const texture = textureUrl ? useLoader(THREE.TextureLoader, textureUrl) as THREE.Texture : null;
-  if (texture) {
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.anisotropy = gl.capabilities.getMaxAnisotropy();
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-    texture.generateMipmaps = false;
+  if (textureUrl) {
+    return <LoadedTransparentBasicMaterial textureUrl={textureUrl} blending={blending} />;
   }
   return (
     <meshBasicMaterial
-      map={texture || null}
-      color={texture ? '#ffffff' : color}
-      transparent={true}
+      color={color}
+      transparent
       blending={blending || THREE.NormalBlending}
       side={THREE.DoubleSide}
       depthWrite={false}
@@ -156,10 +184,7 @@ function TransparentBasicMaterial({ textureUrl, color, blending }: { textureUrl?
 
 /* ── Cosmic Background ────────────────────────── */
 function CosmicBackground() {
-  const texture = useLoader(THREE.TextureLoader, '/textures/stars_milky_way.jpg') as THREE.Texture;
-  if (texture) {
-    texture.colorSpace = THREE.SRGBColorSpace;
-  }
+  const texture = useConfiguredTexture('/textures/stars_milky_way.jpg');
   return (
     <mesh>
       <sphereGeometry args={[900, 64, 64]} />
@@ -170,10 +195,7 @@ function CosmicBackground() {
 
 /* ── Saturn Ring Material ─────────────────────── */
 function SaturnRingMaterial() {
-  const texture = useLoader(THREE.TextureLoader, '/textures/saturn_ring.png') as THREE.Texture;
-  if (texture) {
-    texture.colorSpace = THREE.SRGBColorSpace;
-  }
+  const texture = useConfiguredTexture('/textures/saturn_ring.png');
   return (
     <meshBasicMaterial
       map={texture}
@@ -271,9 +293,6 @@ function OrbitingPlanet({ data, planetPositions }: { data: CelestialObject, plan
     const x = Math.cos(angle) * orbitalRadius;
     const z = Math.sin(angle) * orbitalRadius;
     groupRef.current.position.set(x, data.position[1], z);
-    data.position[0] = x;
-    data.position[2] = z;
-
     let pos = planetPositions.current.get(data.id);
     if (!pos) {
       pos = new THREE.Vector3();
@@ -293,6 +312,7 @@ function OrbitingPlanet({ data, planetPositions }: { data: CelestialObject, plan
           onClick={(e) => {
             e.stopPropagation();
             setSelectedAstro({ ...data, position: [...data.position] });
+            setCardVisible(true);
           }}
         >
           <sphereGeometry args={[radius, 64, 64]} />
@@ -381,9 +401,12 @@ function OrbitingMoon({ data, planetPositions }: { data: CelestialObject, planet
     const finalZ = parentPos.z + zOffset;
 
     groupRef.current.position.set(finalX, parentPos.y, finalZ);
-    data.position[0] = finalX;
-    data.position[1] = parentPos.y;
-    data.position[2] = finalZ;
+    let moonPos = planetPositions.current.get(data.id);
+    if (!moonPos) {
+      moonPos = new THREE.Vector3();
+      planetPositions.current.set(data.id, moonPos);
+    }
+    moonPos.copy(groupRef.current.position);
 
     if (trailRef.current) {
       trailRef.current.position.set(parentPos.x, parentPos.y, parentPos.z);
@@ -403,7 +426,8 @@ function OrbitingMoon({ data, planetPositions }: { data: CelestialObject, planet
         <mesh
           onClick={(e) => {
             e.stopPropagation();
-            setSelectedAstro({ ...data, position: [...data.position] });
+            const position = groupRef.current.position;
+            setSelectedAstro({ ...data, position: [position.x, position.y, position.z] });
             setCardVisible(true);
           }}
         >
@@ -625,7 +649,7 @@ function ConstellationLines3D() {
 /* ── Cinematic Camera Controller ──────────────── */
 function CameraController({ planetPositions }: { planetPositions: React.MutableRefObject<Map<string, THREE.Vector3>> }) {
   const { camera } = useThree();
-  const controlsRef = useRef<any>(null);
+  const controlsRef = useRef<React.ElementRef<typeof OrbitControls>>(null);
   const selectedAstro = useAstroStore((s) => s.selectedAstro);
 
   const targetPos = useRef(new THREE.Vector3(40, 30, 40));
@@ -722,15 +746,18 @@ export default function Scene3D() {
   const planets = visibleObjects.filter((o) => o.type === 'planet' && o.orbitalRadius && !o.parentId);
   const moons = visibleObjects.filter((o) => o.type === 'planet' && o.orbitalRadius && o.parentId);
   const statics = visibleObjects.filter((o) => !(o.type === 'planet' && o.orbitalRadius));
-  const blackholes = visibleObjects.filter((o) => o.type === 'blackhole');
-
   return (
-    <div className="absolute inset-0">
+    <div className="absolute inset-0" aria-label="Visualisation 3D illustrative du ciel" role="img">
       <Canvas
         frameloop={currentView === '3D' ? 'always' : 'never'}
         camera={{ position: [40, 30, 40], fov: 60, near: 0.1, far: 2000 }}
         gl={{ antialias: false, powerPreference: 'high-performance' }}
         dpr={[1, 1.5]}
+        fallback={
+          <div className="absolute inset-0 flex items-center justify-center bg-[#030610] px-6 text-center text-sm text-white/70">
+            La visualisation 3D nécessite un navigateur compatible WebGL. La navigation et les données restent accessibles dans les panneaux.
+          </div>
+        }
       >
         <ambientLight intensity={0.6} />
         <pointLight position={[0, 0, 0]} intensity={100} decay={1.5} color="#fff1e0" distance={1500} />

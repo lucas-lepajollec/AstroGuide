@@ -1,21 +1,11 @@
 import { useMemo, useEffect, useState, useRef } from 'react';
 import { motion } from 'motion/react';
-import { celestialObjects, constellationLines, type CelestialObject } from '../data/mockData';
+import { celestialObjects, constellationLines, type CelestialObject } from '../data/celestialData';
 import { useAstroStore } from '../store/useAstroStore';
 import { Eye, Focus, Plus, Minus } from 'lucide-react';
 
 function mapRange(v: number, inMin: number, inMax: number, outMin: number, outMax: number) {
     return ((v - inMin) / (inMax - inMin)) * (outMax - outMin) + outMin;
-}
-
-function typeIcon(type: CelestialObject['type']) {
-    switch (type) {
-        case 'star': return '★';
-        case 'planet': return '●';
-        case 'galaxy': return '✦';
-        case 'blackhole': return '◉';
-        case 'system': return '◎';
-    }
 }
 
 function RadarGrid() {
@@ -64,12 +54,13 @@ export default function Map2D() {
     }, [selectedAstro, setSelectedAstro, setCardVisible]);
 
     const [viewTransform, setViewTransform] = useState({ scale: 1, x: 0, y: 0 });
+    const [isGesturing, setIsGesturing] = useState(false);
     const pointersRef = useRef<Map<number, { x: number, y: number }>>(new Map());
     const gestureRef = useRef({ type: 'none', startDist: 0, startScale: 1, startCenter: { x: 0, y: 0 }, startPan: { x: 0, y: 0 } });
     const containerRef = useRef<HTMLDivElement>(null);
 
     const getClampedTransform = (rawScale: number, rawX: number, rawY: number) => {
-        let scale = Math.max(1, Math.min(rawScale, 20));
+        const scale = Math.max(1, Math.min(rawScale, 20));
         if (scale <= 1) return { scale: 1, x: 0, y: 0 };
 
         let x = rawX;
@@ -88,6 +79,8 @@ export default function Map2D() {
     };
 
     const handlePointerDown = (e: React.PointerEvent) => {
+        setIsGesturing(true);
+        e.currentTarget.setPointerCapture(e.pointerId);
         pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
         if (pointersRef.current.size === 1) {
             const el = document.elementFromPoint(e.clientX, e.clientY);
@@ -153,9 +146,13 @@ export default function Map2D() {
     };
 
     const handlePointerUp = (e: React.PointerEvent) => {
+        if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+            e.currentTarget.releasePointerCapture(e.pointerId);
+        }
         pointersRef.current.delete(e.pointerId);
         if (pointersRef.current.size === 0) {
             gestureRef.current.type = 'none';
+            setIsGesturing(false);
         } else if (pointersRef.current.size === 1) {
             gestureRef.current.type = 'pan'; // fallback to pan if one finger remains
             const pts = Array.from(pointersRef.current.values());
@@ -208,7 +205,7 @@ export default function Map2D() {
     }, []);
 
     // Solar system bounding circle
-    const solarSystemCircle = useMemo(() => {
+    const solarSystemCircle = (() => {
         const solarIds = new Set(['sun', 'mercury', 'venus', 'earth', 'moon', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto']);
         const solarMapped = mapped.filter(({ obj }) => solarIds.has(obj.id));
         if (solarMapped.length === 0) return null;
@@ -220,9 +217,9 @@ export default function Map2D() {
             if (r > maxR) maxR = r;
         }
         return { cx, cy, r: maxR + 3 }; // +3% padding
-    }, [mapped]);
+    })();
 
-    const svgLines = useMemo(() => {
+    const svgLines = (() => {
         const idToPos = new Map(mapped.map((m) => [m.obj.id, { x: m.px, y: m.py }]));
         const lines: { x1: number; y1: number; x2: number; y2: number }[] = [];
         for (const pairs of Object.values(constellationLines)) {
@@ -233,7 +230,7 @@ export default function Map2D() {
             }
         }
         return lines;
-    }, [mapped]);
+    })();
 
     const handleClick = (obj: CelestialObject) => {
         setSelectedAstro(obj);
@@ -252,9 +249,13 @@ export default function Map2D() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
             className="absolute inset-0 z-30 bg-black/85 backdrop-blur-md touch-none overflow-hidden"
+            aria-label="Carte illustrative des objets célestes"
+            aria-describedby="map-scale-notice"
+            role="region"
             onPointerDown={handlePointerDown}
             onPointerUp={handlePointerUp}
             onPointerLeave={handlePointerUp}
+            onPointerCancel={handlePointerUp}
             onPointerMove={handlePointerMove}
             onWheel={handleWheel}
         >
@@ -281,18 +282,22 @@ export default function Map2D() {
                     <div className="flex md:flex-row flex-col gap-2">
                         <button
                             onClick={() => setViewTransform(v => getClampedTransform(v.scale * 1.5, v.x * 1.5, v.y * 1.5))}
+                            aria-label="Zoomer sur la carte"
                             className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all cursor-pointer text-white/70"
                         >
                             <Plus size={16} />
                         </button>
                         <button
                             onClick={() => setViewTransform(v => getClampedTransform(v.scale / 1.5, v.x / 1.5, v.y / 1.5))}
+                            aria-label="Dézoomer sur la carte"
                             className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all cursor-pointer text-white/70"
                         >
                             <Minus size={16} />
                         </button>
                         <button
                             onClick={() => setViewTransform({ scale: 1, x: 0, y: 0 })}
+                            aria-label="Réinitialiser la carte"
+                            disabled={viewTransform.scale <= 1}
                             className={`p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all cursor-pointer text-white/70 ${viewTransform.scale > 1 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
                             title="Réinitialiser la vue"
                         >
@@ -312,7 +317,7 @@ export default function Map2D() {
                         className="absolute inset-0 w-full h-full"
                         style={{
                             transform: `translate(${viewTransform.x}px, ${viewTransform.y}px) scale(${viewTransform.scale})`,
-                            transition: gestureRef.current.type === 'none' ? 'transform 0.25s ease-out' : 'none'
+                            transition: isGesturing ? 'none' : 'transform 0.25s ease-out'
                         }}
                     >
                         <RadarGrid />
@@ -376,7 +381,7 @@ export default function Map2D() {
                                         top: `calc(50% + ${(py - 50) * viewTransform.scale}% + ${viewTransform.y}px)`,
                                         transform: `translate(-50%, -50%)`,
                                         zIndex: isSelected ? 100 : 10,
-                                        transition: gestureRef.current.type === 'none' ? 'left 0.25s ease-out, top 0.25s ease-out' : 'none'
+                                        transition: isGesturing ? 'none' : 'left 0.25s ease-out, top 0.25s ease-out'
                                     }}
                                 >
                                     {/* Selection ring */}
@@ -397,26 +402,41 @@ export default function Map2D() {
                                     {/* Dot hit-target - strict size prevents invisible overlap blocking clicks */}
                                     <button
                                         data-astro-id={obj.id}
+                                        aria-label={`Sélectionner ${obj.name}`}
+                                        aria-pressed={isSelected}
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             handleClick(obj);
                                         }}
-                                        className="rounded-full transition-all duration-200 hover:brightness-150 pointer-events-auto cursor-pointer outline-none flex-shrink-0"
+                                        className="rounded-full transition-all duration-200 hover:brightness-150 pointer-events-auto cursor-pointer flex-shrink-0 flex items-center justify-center"
                                         style={{
-                                            width: actualSize + 4, // tight hitbox
-                                            height: actualSize + 4,
-                                            backgroundColor: obj.color,
-                                            borderColor: isSelected ? '#10b981' : 'rgba(255,255,255,0.15)',
-                                            borderWidth: isSelected ? 2 : 1,
-                                            boxShadow: isSelected ? `0 0 16px ${obj.color}, 0 0 4px #10b981` : `0 0 6px ${obj.color}60`,
+                                            width: Math.max(32, actualSize + 4),
+                                            height: Math.max(32, actualSize + 4),
                                         }}
-                                    />
+                                    >
+                                        <span
+                                            aria-hidden="true"
+                                            className="rounded-full"
+                                            style={{
+                                                width: actualSize + 4,
+                                                height: actualSize + 4,
+                                                backgroundColor: obj.color,
+                                                borderColor: isSelected ? '#10b981' : 'rgba(255,255,255,0.15)',
+                                                borderWidth: isSelected ? 2 : 1,
+                                                boxShadow: isSelected ? `0 0 16px ${obj.color}, 0 0 4px #10b981` : `0 0 6px ${obj.color}60`,
+                                            }}
+                                        />
+                                    </button>
                                 </div>
                             );
                         })}
                     </div>
                 </div>
             </div>
+
+            <p id="map-scale-notice" className="absolute bottom-10 left-1/2 -translate-x-1/2 text-center text-[8px] md:text-[9px] font-mono text-white/30 tracking-wide pointer-events-none">
+                Positions et distances illustratives — carte non astronomique
+            </p>
 
             {/* Legend */}
             <div className="absolute bottom-4 md:bottom-4 left-1/2 -translate-x-1/2 flex gap-3 md:gap-6 w-max text-[8px] md:text-[10px] whitespace-nowrap font-mono text-white/40 uppercase tracking-widest pointer-events-none">
