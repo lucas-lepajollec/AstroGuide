@@ -8,6 +8,8 @@ import { useAstroStore } from './store/useAstroStore';
 import { AnimatePresence, useReducedMotion } from 'motion/react';
 import LoadingScreen from './components/LoadingScreen';
 import { useState, useEffect } from 'react';
+import DemoExperience from './components/DemoExperience';
+import {isDemoMode} from './config/runtimeMode';
 
 export default function App() {
   const currentView = useAstroStore((s) => s.currentView);
@@ -45,6 +47,8 @@ export default function App() {
       <AnimatePresence>
         {isLoading && <LoadingScreen />}
       </AnimatePresence>
+
+      {isDemoMode && !isLoading && <DemoExperience />}
     </main>
   );
 }

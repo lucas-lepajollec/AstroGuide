@@ -1,5 +1,6 @@
 import { useAstroStore } from '../store/useAstroStore';
 import { Orbit, Map, Rocket, Scaling, Menu, X } from 'lucide-react';
+import {isDemoMode} from '../config/runtimeMode';
 
 export default function Header() {
     const currentView = useAstroStore((s) => s.currentView);
@@ -30,7 +31,7 @@ export default function Header() {
                         <div className="flex flex-col justify-center">
                             <h1 className="text-lg font-bold text-white tracking-wide leading-none">AstroGuide</h1>
                             <p className="text-[9px] font-mono uppercase tracking-[0.12em] text-white/30 mt-1 leading-none">
-                                Exploration Spatiale
+                                {isDemoMode ? 'Démonstration publique' : 'Exploration Spatiale'}
                             </p>
                         </div>
                     </div>

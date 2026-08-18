@@ -39,6 +39,10 @@
     outline: 2px solid #6ee7b7;
     outline-offset: 3px;
   }
+
+  .demo-guide-title:focus-visible {
+    outline: none;
+  }
 }
 
 @layer utilities {
@@ -77,5 +81,50 @@
     inset: 1.5rem 5rem auto auto;
     transform: none;
     padding: 0.65rem 1rem;
+  }
+
+  .demo-guide-content {
+    padding: 0.8rem 1.1rem;
+  }
+
+  .demo-guide-header {
+    margin-bottom: 0.5rem;
+  }
+
+  .demo-guide-title {
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+
+  .demo-guide-copy,
+  .demo-feature-description {
+    display: none;
+  }
+
+  .demo-guide-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 0.65rem;
+  }
+
+  .demo-guide-card {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem;
+  }
+
+  .demo-guide-card h3 {
+    margin-top: 0;
+  }
+
+  .demo-guide-limits {
+    margin-top: 0.65rem;
+    padding-block: 0.55rem;
+  }
+
+  .demo-guide-actions {
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 0.65rem;
   }
 }

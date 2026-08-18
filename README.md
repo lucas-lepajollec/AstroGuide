@@ -61,6 +61,8 @@ Cette commande exécute le lint réel, la vérification TypeScript, les tests pu
 | `npm run typecheck` | Vérification TypeScript sans émission |
 | `npm run test` | Tests Vitest |
 | `npm run build` | TypeScript puis build Vite dans `dist/` |
+| `npm run dev:demo` | Mode démo local avec accueil et remise à zéro |
+| `npm run build:demo` | Build statique isolé de la démonstration publique |
 | `npm run preview` | Prévisualisation du build sur le réseau local |
 | `npm run clean` | Suppression multiplateforme de `dist/` |
 
@@ -104,6 +106,17 @@ Les masses de trous noirs lointains sont des estimations dépendantes des modèl
 ## Confidentialité et sécurité
 
 L'application n'utilise ni cookie, ni stockage local, ni analytique, ni API distante. Elle n'a besoin d'aucune variable d'environnement ou clé API. Consultez [SECURITY.md](SECURITY.md) pour signaler une vulnérabilité.
+
+## Démonstration publique
+
+Le mode démo réutilise le vrai produit et son catalogue intégré. Il n'ajoute aucun compte, backend, appel vers une infrastructure privée ou donnée fictive. Son état est temporaire et revient à sa configuration initiale lors d'une réinitialisation ou d'un rechargement.
+
+```bash
+npm run dev:demo
+npm run build:demo
+```
+
+Le build démo ajoute un accueil explicatif, un marquage permanent, une commande de remise à zéro et des directives `noindex`. La configuration Vercel applique également les en-têtes de sécurité et le fallback nécessaire à l'application monopage. Voir [DEMO.md](DEMO.md) pour le périmètre et la procédure de validation.
 
 ## Contribution et licence
 

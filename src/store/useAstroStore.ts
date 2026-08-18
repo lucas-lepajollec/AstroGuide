@@ -20,7 +20,10 @@ interface AstroState {
   // Card visibility
   isCardVisible: boolean;
   setCardVisible: (isVisible: boolean) => void;
+  resetExploration: () => void;
 }
+
+const allComparisonIds = () => new Set(celestialObjects.map((object) => object.id));
 
 export const useAstroStore = create<AstroState>((set) => ({
   currentView: '3D',
@@ -29,7 +32,7 @@ export const useAstroStore = create<AstroState>((set) => ({
   setCardVisible: (isVisible) => set({ isCardVisible: isVisible }),
   setView: (view) => set({ currentView: view }),
   setSelectedAstro: (astro) => set({ selectedAstro: astro, isCardVisible: !!astro }),
-  comparisonIds: new Set(celestialObjects.map((o) => o.id)),
+  comparisonIds: allComparisonIds(),
   toggleComparisonId: (id) =>
     set((state) => {
       const next = new Set(state.comparisonIds);
@@ -38,11 +41,20 @@ export const useAstroStore = create<AstroState>((set) => ({
       return { comparisonIds: next };
     }),
   selectAllComparison: () =>
-    set({ comparisonIds: new Set(celestialObjects.map((o) => o.id)) }),
+    set({ comparisonIds: allComparisonIds() }),
   deselectAllComparison: () =>
     set({ comparisonIds: new Set() }),
   isNavOpen: false,
   setNavOpen: (isOpen) => set({ isNavOpen: isOpen }),
   isInfoOpen: false,
   setInfoOpen: (isOpen) => set({ isInfoOpen: isOpen }),
+  resetExploration: () =>
+    set({
+      currentView: '3D',
+      selectedAstro: null,
+      comparisonIds: allComparisonIds(),
+      isNavOpen: false,
+      isInfoOpen: false,
+      isCardVisible: false,
+    }),
 }));

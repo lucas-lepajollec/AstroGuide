@@ -8,13 +8,16 @@
   },
   "scripts": {
     "dev": "vite --port=2499 --host=0.0.0.0",
+    "dev:demo": "vite --mode demo --port=2499 --host=0.0.0.0",
     "build": "npm run typecheck && vite build",
+    "build:demo": "npm run typecheck && vite build --mode demo",
     "preview": "vite preview --host=0.0.0.0",
+    "preview:demo": "vite preview --host=0.0.0.0",
     "clean": "node --input-type=module -e \"import { rmSync } from 'node:fs'; rmSync('dist', { recursive: true, force: true });\"",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run build"
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run build:demo"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

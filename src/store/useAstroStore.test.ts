@@ -50,4 +50,27 @@ describe('AstroGuide store', () => {
       expect(useAstroStore.getState().currentView).toBe(view);
     }
   });
+
+  it('resets every temporary exploration choice', () => {
+    const earth = celestialObjects.find((object) => object.id === 'earth')!;
+    useAstroStore.setState({
+      currentView: 'SIZE',
+      selectedAstro: earth,
+      comparisonIds: new Set(['earth']),
+      isNavOpen: true,
+      isInfoOpen: true,
+      isCardVisible: true,
+    });
+
+    useAstroStore.getState().resetExploration();
+
+    expect(useAstroStore.getState()).toMatchObject({
+      currentView: '3D',
+      selectedAstro: null,
+      isNavOpen: false,
+      isInfoOpen: false,
+      isCardVisible: false,
+    });
+    expect(useAstroStore.getState().comparisonIds).toEqual(allIds);
+  });
 });
