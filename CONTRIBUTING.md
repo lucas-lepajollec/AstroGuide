@@ -13,7 +13,9 @@ npm ci --include=optional
 npm run dev
 ```
 
-L'application répond sur `http://localhost:2499`.
+L'application répond uniquement sur `http://127.0.0.1:2499`. Utilisez
+`npm run dev:lan` seulement pour une vérification depuis un autre appareil du
+réseau local.
 
 ## Avant une pull request
 

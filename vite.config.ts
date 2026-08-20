@@ -55,6 +55,6 @@ export default defineConfig(({mode}) => ({
     target: 'es2022',
   },
   preview: {
-    host: '0.0.0.0',
+    host: '127.0.0.1',
   },
 }));

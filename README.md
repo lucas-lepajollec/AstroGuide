@@ -45,7 +45,8 @@ npm ci --include=optional
 npm run dev
 ```
 
-L'application est ensuite accessible sur `http://localhost:2499` et sur les adresses réseau affichées par Vite.
+L'application est ensuite accessible uniquement sur `http://127.0.0.1:2499`.
+Pour la tester depuis un autre appareil du réseau local, utilisez `npm run dev:lan`.
 
 ## Contrôles qualité
 
@@ -61,9 +62,11 @@ Cette commande exécute le lint réel, la vérification TypeScript, les tests pu
 | `npm run typecheck` | Vérification TypeScript sans émission |
 | `npm run test` | Tests Vitest |
 | `npm run build` | TypeScript puis build Vite dans `dist/` |
+| `npm run dev:lan` | Développement accessible sur le réseau local |
 | `npm run dev:demo` | Mode démo local avec accueil et remise à zéro |
+| `npm run dev:demo:lan` | Mode démo accessible sur le réseau local |
 | `npm run build:demo` | Build statique isolé de la démonstration publique |
-| `npm run preview` | Prévisualisation du build sur le réseau local |
+| `npm run preview` | Prévisualisation locale du build |
 | `npm run clean` | Suppression multiplateforme de `dist/` |
 
 ## Docker

@@ -21,6 +21,9 @@ npm ci --include=optional
 npm run dev:demo
 ```
 
+Le serveur reste local par défaut. Pour tester la démo depuis un autre appareil
+du réseau local, utilisez `npm run dev:demo:lan`.
+
 Pour tester l'artefact destiné à l'hébergement :
 
 ```bash
