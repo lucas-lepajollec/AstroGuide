@@ -150,6 +150,7 @@ The [public demo](https://demo.astroguide.lucas-homelab.fr) is the real static p
 
 - [Documentation](https://docs.astroguide.lucas-homelab.fr)
 - [Contributing guide](CONTRIBUTING.md)
+- [Changelog](CHANGELOG.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 - [Security policy](SECURITY.md)
 - [MIT License](LICENSE)
