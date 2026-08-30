@@ -1,42 +1,55 @@
 <div align="center">
-  <img src="public/logo.svg" alt="Logo AstroGuide" width="96" />
+  <img src="public/logo.svg" alt="AstroGuide logo" width="96" />
   <h1>AstroGuide</h1>
-  <p><strong>Exploration spatiale interactive en 3D, carte illustrative et comparaison de tailles.</strong></p>
-  <img src="public/astroguide.png" alt="Interface AstroGuide" width="800" />
+  <p><strong>Explore astronomical objects and scale through interactive 3D, 2D, and comparison views.</strong></p>
+
+  <p>
+    <a href="https://astroguide.lucas-homelab.fr"><strong>Website</strong></a> ·
+    <a href="https://demo.astroguide.lucas-homelab.fr"><strong>Live demo</strong></a> ·
+    <a href="https://docs.astroguide.lucas-homelab.fr"><strong>Documentation</strong></a>
+  </p>
+
+  <p>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-17b890" alt="MIT license" /></a>
+    <img src="https://img.shields.io/badge/account-free-111827" alt="Account free" />
+    <img src="https://img.shields.io/badge/data-local-111827" alt="Local data" />
+  </p>
+
+  <img src="docs/assets/screenshots/astroguide-demo-3d.png" alt="AstroGuide interactive 3D exploration view" width="1200" />
 </div>
 
-AstroGuide est une application web statique en français. Elle permet de parcourir un catalogue de 39 objets célestes dans trois vues complémentaires, sans compte, backend ni collecte de données personnelles.
+AstroGuide turns abstract astronomical objects and orders of magnitude into something people can explore. Its catalog of 39 celestial objects is available through three complementary views: a navigable 3D scene, an interactive 2D map, and a visual size comparison.
 
-## Fonctionnalités
+The application is static, French-first, account-free, and runs without a backend, analytics, cookies, or remote API calls.
 
-- exploration 3D avec textures, orbites animées et contrôle de caméra ;
-- carte 2D zoomable et déplaçable, utilisable à la souris ou au tactile ;
-- comparaison de diamètres ou d'étendues approximatifs ;
-- recherche, filtres, constellations et sélection des objets à comparer ;
-- interface adaptée au bureau, à la tablette, au mobile portrait et paysage ;
-- arrêt de la boucle de rendu WebGL lorsque la vue 3D est masquée ;
-- matériaux de secours lorsqu'une texture ne peut pas être chargée.
+## Explore three perspectives
+
+| Interactive exploration | Visual comparison |
+| --- | --- |
+| Move through a Three.js scene, inspect objects, search the catalog, and control the camera. | Compare approximate diameters and extents while filtering the objects that matter. |
+| <img src="docs/assets/screenshots/astroguide-demo-3d.png" alt="AstroGuide 3D exploration with the object catalog" width="640" /> | <img src="docs/assets/screenshots/astroguide-demo-comparison.png" alt="AstroGuide visual size comparison" width="640" /> |
+
+The 2D tactical map adds a touch-friendly, zoomable overview for moving through the same catalog from another perspective.
 
 > [!IMPORTANT]
-> AstroGuide est une visualisation pédagogique. Les positions, distances visuelles, orbites et tailles 3D sont illustratives. Les valeurs textuelles sont arrondies, certaines grandeurs astrophysiques restent incertaines, et une taille minimale d'affichage est appliquée dans la comparaison.
+> AstroGuide is an educational visualization, not a precision astronomical simulator. Rendered positions, visual distances, orbits, and 3D sizes are illustrative. Text values are rounded, some astrophysical quantities remain uncertain, and the comparison view applies a minimum visible size.
 
-## Stack
+## Highlights
 
-- React 19 et TypeScript strict ;
-- Vite 6 et Tailwind CSS 4 ;
-- Three.js, React Three Fiber et Drei ;
-- Zustand pour l'état ;
-- Motion pour les transitions ;
-- Vitest et ESLint pour les contrôles automatisés ;
-- Nginx non privilégié dans l'image Docker.
+- Searchable catalog of stars, planets, galaxies, black holes, and larger systems.
+- Interactive 3D view with textured bodies, animated orbits, camera controls, and fallback materials.
+- Zoomable and pannable 2D map for mouse and touch input.
+- Size-comparison view with filters and selectable objects.
+- Responsive layouts for desktop, tablet, portrait mobile, and low-height landscape screens.
+- WebGL rendering pauses when the 3D view is hidden to avoid unnecessary work.
+- No account, backend, personal-data collection, or API key.
 
-## Prérequis
+## Quick start
 
-- Node.js 22.12 ou version ultérieure de la branche 22 ;
-- npm 10 ou ultérieur ;
-- Docker avec Docker Compose pour le déploiement conteneurisé.
+### Requirements
 
-## Installation locale
+- Node.js 22.12 or newer within the Node.js 22 line.
+- npm 10 or newer.
 
 ```bash
 git clone https://github.com/lucas-lepajollec/AstroGuide.git
@@ -45,82 +58,65 @@ npm ci --include=optional
 npm run dev
 ```
 
-L'application est ensuite accessible uniquement sur `http://127.0.0.1:2499`.
-Pour la tester depuis un autre appareil du réseau local, utilisez `npm run dev:lan`.
-
-## Contrôles qualité
-
-```bash
-npm run check
-```
-
-Cette commande exécute le lint réel, la vérification TypeScript, les tests puis le build de production. Les commandes peuvent aussi être lancées séparément :
-
-| Commande | Rôle |
-| --- | --- |
-| `npm run lint` | ESLint sans avertissement autorisé |
-| `npm run typecheck` | Vérification TypeScript sans émission |
-| `npm run test` | Tests Vitest |
-| `npm run build` | TypeScript puis build Vite dans `dist/` |
-| `npm run dev:lan` | Développement accessible sur le réseau local |
-| `npm run dev:demo` | Mode démo local avec accueil et remise à zéro |
-| `npm run dev:demo:lan` | Mode démo accessible sur le réseau local |
-| `npm run build:demo` | Build statique isolé de la démonstration publique |
-| `npm run preview` | Prévisualisation locale du build |
-| `npm run clean` | Suppression multiplateforme de `dist/` |
+Open `http://127.0.0.1:2499`. The development server is local-only by default; use `npm run dev:lan` only when you deliberately want to test from another device on a trusted network.
 
 ## Docker
-
-Construction locale reproductible depuis le lockfile :
 
 ```bash
 docker compose up --build -d
 ```
 
-AstroGuide répond alors sur `http://localhost:2502`. Le conteneur s'exécute sans privilèges, avec un système de fichiers en lecture seule, un healthcheck et des en-têtes HTTP de sécurité.
+AstroGuide is then available on `http://localhost:2502`. The production container runs without privileges, uses a read-only filesystem, exposes a health check, and serves security headers through Nginx.
 
-Le workflow GitHub publie également `ghcr.io/lucas-lepajollec/astroguide` après les validations des poussées sur `main` et des tags `v*`. La disponibilité d'une architecture donnée dépend de la dernière exécution de publication réussie.
+Validated pushes to `main` and `v*` tags publish `ghcr.io/lucas-lepajollec/astroguide`. Architecture availability depends on the latest successful publishing workflow.
 
-## Structure réelle
-
-```text
-AstroGuide/
-├── .github/                 # modèles et workflows CI / image
-├── public/                  # logo, capture et textures
-├── src/
-│   ├── components/         # vues 3D, 2D, comparaison et interface
-│   ├── data/               # catalogue céleste et tests d'intégrité
-│   ├── store/              # état Zustand et tests
-│   ├── App.tsx
-│   ├── index.css
-│   └── main.tsx
-├── Dockerfile
-├── docker-compose.yml
-├── nginx.conf
-└── package.json
-```
-
-## Données et limites scientifiques
-
-Les ordres de grandeur proviennent principalement des ressources de la [NASA consacrées au Système solaire](https://science.nasa.gov/solar-system/), des [résultats scientifiques de l'Event Horizon Telescope sur M87*](https://arxiv.org/abs/1906.11243), des observations NASA de [Bételgeuse](https://science.nasa.gov/universe/what-is-betelgeuse-inside-the-strange-volatile-star/) et des informations [Hubble/Gaia sur l'avenir de la Voie lactée et d'Andromède](https://science.nasa.gov/missions/hubble/apocalypse-when-hubble-casts-doubt-on-certainty-of-galactic-collision/).
-
-Les masses de trous noirs lointains sont des estimations dépendantes des modèles. Phoenix A est explicitement présenté comme un candidat très incertain. Les contributions qui modifient le catalogue doivent citer une source scientifique ou institutionnelle et conserver les unités cohérentes.
-
-## Confidentialité et sécurité
-
-L'application n'utilise ni cookie, ni stockage local, ni analytique, ni API distante. Elle n'a besoin d'aucune variable d'environnement ou clé API. Consultez [SECURITY.md](SECURITY.md) pour signaler une vulnérabilité.
-
-## Démonstration publique
-
-Le mode démo réutilise le vrai produit et son catalogue intégré. Il n'ajoute aucun compte, backend, appel vers une infrastructure privée ou donnée fictive. Son état est temporaire et revient à sa configuration initiale lors d'une réinitialisation ou d'un rechargement.
+## Quality checks
 
 ```bash
-npm run dev:demo
-npm run build:demo
+npm run check
 ```
 
-Le build démo ajoute un accueil explicatif, un marquage permanent, une commande de remise à zéro et des directives `noindex`. La configuration Vercel applique également les en-têtes de sécurité et le fallback nécessaire à l'application monopage. Voir [DEMO.md](DEMO.md) pour le périmètre et la procédure de validation.
+| Command | Purpose |
+| --- | --- |
+| `npm run lint` | Run ESLint with zero warnings allowed. |
+| `npm run typecheck` | Validate TypeScript without emitting files. |
+| `npm run test` | Run the Vitest suite. |
+| `npm run build` | Type-check and create the production build. |
+| `npm run build:demo` | Build the isolated public-demo variant. |
+| `npm run dev:demo` | Run the demo locally with its welcome and reset flow. |
 
-## Contribution et licence
+## Scientific scope
 
-Les contributions sont bienvenues : voir [CONTRIBUTING.md](CONTRIBUTING.md) et [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). AstroGuide est distribué sous licence [MIT](LICENSE).
+The current orders of magnitude draw primarily from institutional and scientific sources, including [NASA Solar System Exploration](https://science.nasa.gov/solar-system/), the [Event Horizon Telescope results for M87*](https://arxiv.org/abs/1906.11243), NASA material about [Betelgeuse](https://science.nasa.gov/universe/what-is-betelgeuse-inside-the-strange-volatile-star/), and [Hubble/Gaia work on the Milky Way–Andromeda future](https://science.nasa.gov/missions/hubble/apocalypse-when-hubble-casts-doubt-on-certainty-of-galactic-collision/).
+
+Distant black-hole masses depend on models and estimates. Phoenix A is deliberately presented as a highly uncertain candidate. Contributions that change the catalog must cite a scientific or institutional source and preserve coherent units.
+
+## Architecture
+
+| Layer | Technology |
+| --- | --- |
+| Interface | React 19, TypeScript, Tailwind CSS 4, Motion |
+| Visualization | Three.js, React Three Fiber, Drei |
+| State | Zustand |
+| Tooling | Vite 6, Vitest, ESLint |
+| Deployment | Static build or unprivileged Nginx container |
+
+```text
+src/
+├── components/       # 3D, 2D, comparison, and interface components
+├── data/             # Celestial catalog and integrity tests
+├── store/            # Zustand state and tests
+├── App.tsx
+├── index.css
+└── main.tsx
+```
+
+## Public demo
+
+The [public demo](https://demo.astroguide.lucas-homelab.fr) is the real static product with an explicit demo welcome, permanent labeling, reset control, and `noindex` directives. It introduces no backend, external account, or fictional scientific dataset. See [DEMO.md](DEMO.md) for its scope and validation process.
+
+## Contributing and security
+
+Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before opening a pull request. Report suspected vulnerabilities according to [SECURITY.md](SECURITY.md).
+
+AstroGuide is distributed under the [MIT License](LICENSE).
