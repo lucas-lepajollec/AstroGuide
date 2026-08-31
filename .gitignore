@@ -7,3 +7,7 @@ coverage/
 .env*
 !.env.example
 .vercel/
+
+# local private project context (never commit)
+AGENTS.override.md
+.project-local/
