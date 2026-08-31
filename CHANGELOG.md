@@ -6,6 +6,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Changed
+
+- Replaced the generic rocket artwork with AstroGuide's orbital-marker identity across the application and favicon.
+
 ### Added
 
 - A consistent repository, quality, security, and release foundation.

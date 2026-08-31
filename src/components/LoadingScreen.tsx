@@ -1,5 +1,4 @@
 import { motion } from 'motion/react';
-import { Rocket } from 'lucide-react';
 
 export default function LoadingScreen() {
     return (
@@ -26,9 +25,7 @@ export default function LoadingScreen() {
                 />
 
                 {/* Logo Icon */}
-                <div className="relative p-6 rounded-2xl bg-black/40 border border-emerald-500/20 backdrop-blur-md mb-6 shadow-[0_0_30px_rgba(16,185,129,0.15)]">
-                    <Rocket size={48} className="text-emerald-400" />
-                </div>
+                <img src="/logo.svg?v=2" alt="" className="relative mb-6 h-24 w-24 object-contain" />
 
                 {/* Text */}
                 <h1 className="text-3xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 mb-2">

@@ -1,5 +1,5 @@
 import { useAstroStore } from '../store/useAstroStore';
-import { Orbit, Map, Rocket, Scaling, Menu, X } from 'lucide-react';
+import { Orbit, Map, Scaling, Menu, X } from 'lucide-react';
 import {isDemoMode} from '../config/runtimeMode';
 
 export default function Header() {
@@ -25,9 +25,7 @@ export default function Header() {
                 <div className="w-full md:w-[220px] flex items-center justify-between md:justify-start px-6 md:px-4 md:bg-black/70 md:backdrop-blur-xl md:border-r md:border-white/8 pointer-events-auto pt-2 md:pt-0">
                     {/* Conteneur Titre/Logo avec fond unifié sur mobile (semblable au menu burger) */}
                     <div className="flex items-center justify-start gap-3 mt-1 pl-2 pr-4 py-1.5 rounded-xl bg-black/40 backdrop-blur-md md:bg-transparent md:backdrop-blur-none transition-all">
-                        <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 shrink-0 md:bg-emerald-500/10">
-                            <Rocket size={18} className="text-emerald-400" />
-                        </div>
+                        <img src="/logo.svg?v=2" alt="" className="h-9 w-9 shrink-0 object-contain" />
                         <div className="flex flex-col justify-center">
                             <h1 className="text-lg font-bold text-white tracking-wide leading-none">AstroGuide</h1>
                             <p className="text-[9px] font-mono uppercase tracking-[0.12em] text-white/30 mt-1 leading-none">
