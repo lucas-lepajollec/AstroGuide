@@ -1,12 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 34 34" fill="none">
-  <!-- Rounded background and border (matches bg-emerald-500/10 border-emerald-500/20 rounded-lg) -->
-  <rect x="0.5" y="0.5" width="33" height="33" rx="8" fill="#10b981" fill-opacity="0.1" stroke="#10b981" stroke-opacity="0.2" stroke-width="1" />
-  
-  <!-- Rocket Icon (matches text-emerald-400) -->
-  <g transform="translate(5, 5)" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
-    <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
-    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
-    <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+  <path fill="#10B981" fill-rule="evenodd" d="M128 238C107 214 52 154 52 98C52 56 86 22 128 22C170 22 204 56 204 98C204 154 149 214 128 238ZM128 152C158 152 182 128 182 98C182 68 158 44 128 44C98 44 74 68 74 98C74 128 98 152 128 152Z" clip-rule="evenodd"/>
+  <ellipse cx="128" cy="98" rx="44" ry="18" transform="rotate(-18 128 98)" stroke="#34D399" stroke-width="11"/>
+  <circle cx="128" cy="98" r="18" fill="#34D399"/>
 </svg>
