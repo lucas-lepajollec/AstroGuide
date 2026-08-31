@@ -1,5 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
-  <path fill="#10B981" fill-rule="evenodd" d="M128 238C107 214 52 154 52 98C52 56 86 22 128 22C170 22 204 56 204 98C204 154 149 214 128 238ZM128 152C158 152 182 128 182 98C182 68 158 44 128 44C98 44 74 68 74 98C74 128 98 152 128 152Z" clip-rule="evenodd"/>
-  <ellipse cx="128" cy="98" rx="44" ry="18" transform="rotate(-18 128 98)" stroke="#34D399" stroke-width="11"/>
-  <circle cx="128" cy="98" r="18" fill="#34D399"/>
+  <defs>
+    <linearGradient id="emerald-launch" x1="20" y1="236" x2="236" y2="20" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#047857"/>
+      <stop offset="0.58" stop-color="#059669"/>
+      <stop offset="1" stop-color="#34D399"/>
+    </linearGradient>
+    <mask id="rocket-cutout" maskUnits="userSpaceOnUse" x="20" y="20" width="216" height="216">
+      <rect x="20" y="20" width="216" height="216" rx="48" fill="#fff"/>
+      <g transform="rotate(34 128 128)" fill="#000">
+        <path d="M128 46c-23 20-32 49-30 82l-20 20 4 34 25-17c4 9 9 16 14 22l7 24 7-24c6-6 10-13 14-22l25 17 4-34-20-20c2-33-7-62-30-82Z"/>
+      </g>
+    </mask>
+  </defs>
+  <rect x="20" y="20" width="216" height="216" rx="48" fill="url(#emerald-launch)" mask="url(#rocket-cutout)"/>
 </svg>

@@ -25,7 +25,7 @@ export default function LoadingScreen() {
                 />
 
                 {/* Logo Icon */}
-                <img src="/logo.svg?v=2" alt="" className="relative mb-6 h-24 w-24 object-contain" />
+                <img src="/logo.svg?v=3" alt="" className="relative mb-6 h-24 w-24 object-contain" />
 
                 {/* Text */}
                 <h1 className="text-3xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 mb-2">

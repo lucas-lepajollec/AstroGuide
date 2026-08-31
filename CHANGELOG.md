@@ -8,7 +8,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Changed
 
-- Replaced the generic rocket artwork with AstroGuide's orbital-marker identity across the application and favicon.
+- Replaced the generic rocket artwork with AstroGuide's emerald negative-space launch identity across the application and favicon.
 
 ### Added
 
