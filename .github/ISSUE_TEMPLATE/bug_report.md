@@ -12,8 +12,8 @@ A clear and concise description of what the bug is.
 **To Reproduce**
 Steps to reproduce the behavior:
 1. Go to '...'
-2. Upload file '....'
-3. Select a view or celestial object
+2. Open the affected view or celestial object
+3. Perform the interaction that triggers the problem
 4. See error
 
 **Expected behavior**
