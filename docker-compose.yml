@@ -2,15 +2,21 @@ name: astroguide
 
 services:
   astroguide:
-    build:
-      context: .
-    image: astroguide:local
+    image: ${ASTROGUIDE_IMAGE:-ghcr.io/lucas-lepajollec/astroguide:latest}
     container_name: astroguide-app
     ports:
-      - "2502:8080"
+      - "${ASTROGUIDE_BIND_ADDRESS:-127.0.0.1}:2502:8080"
     restart: unless-stopped
     read_only: true
     tmpfs:
-      - /tmp
+      - /tmp:size=16m,mode=1777
     security_opt:
       - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

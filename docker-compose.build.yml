@@ -1,0 +1,6 @@
+services:
+  astroguide:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: astroguide:local
