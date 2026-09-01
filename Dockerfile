@@ -13,7 +13,9 @@ FROM nginx:1.27-alpine AS runtime
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-RUN chown -R nginx:nginx /usr/share/nginx/html && nginx -t
+RUN chown -R nginx:nginx /usr/share/nginx/html \
+    && nginx -t \
+    && rm -f /tmp/nginx.pid
 
 USER nginx
 EXPOSE 8080
