@@ -2,8 +2,9 @@ import React, { useRef, useMemo, useEffect, Suspense } from 'react';
 import { Canvas, useFrame, useThree, useLoader } from '@react-three/fiber';
 import { OrbitControls, Stars, Html, Billboard } from '@react-three/drei';
 import * as THREE from 'three';
-import { celestialObjects, constellationLines, type CelestialObject } from '../data/celestialData';
+import { constellationLines, type CelestialObject } from '../data/celestialData';
 import { useAstroStore } from '../store/useAstroStore';
+import { useI18n } from '../i18n';
 
 /* ── Error Boundary for Textures ─────────────── */
 class TextureErrorBoundary extends React.Component<{ fallback: React.ReactNode, children: React.ReactNode }, { hasError: boolean }> {
@@ -616,9 +617,9 @@ function CelestialBody({ data }: { data: CelestialObject }) {
 }
 
 /* ── Constellation Lines 3D ───────────────────── */
-function ConstellationLines3D() {
+function ConstellationLines3D({objects}: {objects: CelestialObject[]}) {
   const segments = useMemo(() => {
-    const objMap = new Map(celestialObjects.map((o) => [o.id, o]));
+    const objMap = new Map(objects.map((o) => [o.id, o]));
     const segs: [THREE.Vector3, THREE.Vector3][] = [];
     for (const pairs of Object.values(constellationLines)) {
       for (const [fromId, toId] of pairs) {
@@ -630,7 +631,7 @@ function ConstellationLines3D() {
       }
     }
     return segs;
-  }, []);
+  }, [objects]);
 
   return (
     <group>
@@ -738,16 +739,17 @@ function CameraController({ planetPositions }: { planetPositions: React.MutableR
 
 /* ── Main Scene ───────────────────────────────── */
 export default function Scene3D() {
+  const {m, objects} = useI18n();
   const planetPositions = useRef<Map<string, THREE.Vector3>>(new Map());
   const currentView = useAstroStore((s) => s.currentView);
 
   // Filter out objects with hideIn3D flag
-  const visibleObjects = celestialObjects.filter((o) => !o.hideIn3D);
+  const visibleObjects = objects.filter((o) => !o.hideIn3D);
   const planets = visibleObjects.filter((o) => o.type === 'planet' && o.orbitalRadius && !o.parentId);
   const moons = visibleObjects.filter((o) => o.type === 'planet' && o.orbitalRadius && o.parentId);
   const statics = visibleObjects.filter((o) => !(o.type === 'planet' && o.orbitalRadius));
   return (
-    <div className="absolute inset-0" aria-label="Visualisation 3D illustrative du ciel" role="img">
+    <div className="absolute inset-0" aria-label={m.sceneRegion} role="img">
       <Canvas
         frameloop={currentView === '3D' ? 'always' : 'never'}
         camera={{ position: [40, 30, 40], fov: 60, near: 0.1, far: 2000 }}
@@ -755,7 +757,7 @@ export default function Scene3D() {
         dpr={[1, 1.5]}
         fallback={
           <div className="absolute inset-0 flex items-center justify-center bg-[#030610] px-6 text-center text-sm text-white/70">
-            La visualisation 3D nécessite un navigateur compatible WebGL. La navigation et les données restent accessibles dans les panneaux.
+            {m.sceneError}
           </div>
         }
       >
@@ -782,7 +784,7 @@ export default function Scene3D() {
           <OrbitingMoon key={obj.id} data={obj} planetPositions={planetPositions} />
         ))}
 
-        <ConstellationLines3D />
+        <ConstellationLines3D objects={objects} />
       </Canvas>
     </div>
   );

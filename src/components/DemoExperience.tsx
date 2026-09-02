@@ -1,9 +1,10 @@
 import {useEffect, useRef, useState} from 'react';
 import {CircleHelp, Map, Orbit, RotateCcw, Scaling, ShieldCheck, Sparkles} from 'lucide-react';
-import {celestialObjects} from '../data/celestialData';
 import {useAstroStore} from '../store/useAstroStore';
+import {useI18n} from '../i18n';
 
 export default function DemoExperience() {
+  const {m, objects} = useI18n();
   const [isGuideOpen, setGuideOpen] = useState(true);
   const [announcement, setAnnouncement] = useState('');
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -24,7 +25,7 @@ export default function DemoExperience() {
 
   const resetDemo = () => {
     resetExploration();
-    setAnnouncement('La démonstration est en cours de réinitialisation.');
+    setAnnouncement(m.resetting);
     window.location.reload();
   };
 
@@ -35,10 +36,10 @@ export default function DemoExperience() {
           type="button"
           onClick={() => setGuideOpen(true)}
           className="flex min-h-9 items-center gap-2 rounded-full px-3 font-mono text-[10px] uppercase tracking-[0.16em] text-emerald-200 transition-colors hover:bg-emerald-400/10"
-          aria-label="Afficher les informations de la démonstration"
+          aria-label={m.demoInfo}
         >
           <Sparkles size={13} aria-hidden="true" />
-          <span>Démo</span>
+          <span>{m.demo}</span>
           <CircleHelp size={13} className="text-white/45" aria-hidden="true" />
         </button>
         <span className="h-5 w-px bg-white/10" aria-hidden="true" />
@@ -46,8 +47,8 @@ export default function DemoExperience() {
           type="button"
           onClick={resetDemo}
           className="grid size-9 place-items-center rounded-full text-white/55 transition-colors hover:bg-white/10 hover:text-white"
-          aria-label="Réinitialiser la démonstration"
-          title="Réinitialiser"
+          aria-label={m.resetDemo}
+          title={m.reset}
         >
           <RotateCcw size={14} aria-hidden="true" />
         </button>
@@ -73,25 +74,25 @@ export default function DemoExperience() {
             <div className="demo-guide-header mb-5 flex items-center justify-between gap-4">
               <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/8 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-200">
                 <ShieldCheck size={13} aria-hidden="true" />
-                Démonstration publique
+                {m.publicDemo}
               </div>
               <span className="font-mono text-[10px] uppercase tracking-widest text-white/30">
-                {celestialObjects.length} objets
+                {objects.length} {m.objects}
               </span>
             </div>
 
             <h2 ref={guideTitleRef} id="demo-guide-title" tabIndex={-1} className="demo-guide-title max-w-xl text-3xl font-semibold tracking-tight sm:text-4xl">
-              Explorez l’espace selon trois points de vue.
+              {m.demoTitle}
             </h2>
             <p id="demo-guide-description" className="demo-guide-copy mt-3 max-w-2xl text-sm leading-6 text-white/55 sm:text-[15px]">
-              Cette démo est le vrai produit AstroGuide, exécuté uniquement dans votre navigateur. Elle n’utilise aucun compte, aucune API distante et ne conserve aucune modification.
+              {m.demoDescription}
             </p>
 
             <div className="demo-guide-grid mt-5 grid gap-2 sm:mt-7 sm:grid-cols-3 sm:gap-3">
               {[
-                {icon: Orbit, title: 'Exploration 3D', text: 'Observez les astres et déplacez librement la caméra.'},
-                {icon: Map, title: 'Carte', text: 'Parcourez le catalogue sur une représentation spatiale illustrative.'},
-                {icon: Scaling, title: 'Comparaison', text: 'Comparez les ordres de grandeur et filtrez les objets.'},
+                {icon: Orbit, title: m.view3d, text: m.demo3dText},
+                {icon: Map, title: m.map, text: m.demoMapText},
+                {icon: Scaling, title: m.comparison, text: m.demoComparisonText},
               ].map(({icon: Icon, title, text}) => (
                 <div key={title} className="demo-guide-card flex items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.035] p-3 sm:block sm:p-4">
                   <Icon size={18} className="shrink-0 text-emerald-300" aria-hidden="true" />
@@ -102,7 +103,7 @@ export default function DemoExperience() {
             </div>
 
             <div className="demo-guide-limits mt-4 rounded-2xl border border-amber-200/10 bg-amber-100/[0.035] px-4 py-3 text-xs leading-5 text-white/45 sm:mt-6">
-              Les positions, distances visuelles, orbites et tailles rendues sont illustratives. Les valeurs textuelles sont arrondies et certaines estimations scientifiques restent incertaines.
+              {m.demoLimits}
             </div>
 
             <div className="demo-guide-actions mt-5 flex flex-col gap-3 sm:mt-7 sm:flex-row sm:justify-end">
@@ -111,7 +112,7 @@ export default function DemoExperience() {
                 onClick={() => setGuideOpen(false)}
                 className="min-h-11 rounded-xl bg-emerald-400 px-6 text-sm font-semibold text-[#032016] transition-colors hover:bg-emerald-300 sm:order-2"
               >
-                Commencer l’exploration
+                {m.startExploration}
               </button>
               <button
                 type="button"
@@ -119,7 +120,7 @@ export default function DemoExperience() {
                 className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-white/10 px-4 text-sm text-white/55 transition-colors hover:bg-white/5 hover:text-white sm:order-1"
               >
                 <RotateCcw size={15} aria-hidden="true" />
-                Repartir de zéro
+                {m.startOver}
               </button>
             </div>
           </div>

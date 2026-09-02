@@ -2,15 +2,15 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Maximize2, Route, Telescope, Ruler, Info } from 'lucide-react';
 import { useAstroStore } from '../store/useAstroStore';
 import { useMemo } from 'react';
-import { celestialObjects } from '../data/celestialData';
+import { useI18n } from '../i18n';
 
-function typeLabel(type: string) {
+function typeLabel(type: string, m: ReturnType<typeof useI18n>['m']) {
     switch (type) {
-        case 'star': return 'Étoile';
-        case 'planet': return 'Planète';
-        case 'galaxy': return 'Galaxie';
-        case 'blackhole': return 'Trou Noir';
-        case 'system': return 'Système';
+        case 'star': return m.star;
+        case 'planet': return m.planet;
+        case 'galaxy': return m.galaxy;
+        case 'blackhole': return m.blackHole;
+        case 'system': return m.system;
         default: return type;
     }
 }
@@ -27,6 +27,7 @@ function typeBadgeColor(type: string) {
 }
 
 export default function SidePanel() {
+    const {m, objects} = useI18n();
     const selectedAstro = useAstroStore((s) => s.selectedAstro);
     const currentView = useAstroStore((s) => s.currentView);
     const comparisonIds = useAstroStore((s) => s.comparisonIds);
@@ -35,12 +36,12 @@ export default function SidePanel() {
     const isCardVisible = useAstroStore((s) => s.isCardVisible);
     const setCardVisible = useAstroStore((s) => s.setCardVisible);
 
-    const displayAstro = selectedAstro;
+    const displayAstro = selectedAstro ? objects.find((object) => object.id === selectedAstro.id) : undefined;
 
     const sorted = useMemo(() => {
         if (currentView !== 'SIZE') return [];
-        return celestialObjects.filter((o) => comparisonIds.has(o.id)).sort((a, b) => a.sizeKm - b.sizeKm);
-    }, [currentView, comparisonIds]);
+        return objects.filter((o) => comparisonIds.has(o.id)).sort((a, b) => a.sizeKm - b.sizeKm);
+    }, [currentView, comparisonIds, objects]);
 
     const currentIndex = useMemo(() => {
         if (!displayAstro || sorted.length === 0) return 0;
@@ -61,7 +62,7 @@ export default function SidePanel() {
                         className="mobile-info-trigger md:hidden fixed bottom-16 left-1/2 -translate-x-1/2 z-40 bg-black/80 backdrop-blur-md px-6 py-3 rounded-full border border-white/10 flex items-center gap-2 text-white shadow-xl shadow-black/50"
                     >
                         <Info size={16} className="text-emerald-400" />
-                        <span className="text-xs font-medium tracking-wide">Infos sur {displayAstro.name}</span>
+                        <span className="text-xs font-medium tracking-wide">{m.informationAbout} {displayAstro.name}</span>
                     </motion.button>
                 )}
             </AnimatePresence>
@@ -79,7 +80,7 @@ export default function SidePanel() {
                         }}
                         transition={{ type: 'spring', damping: 28, stiffness: 250 }}
                         role="complementary"
-                        aria-label={`Informations sur ${displayAstro.name}`}
+                        aria-label={`${m.informationAbout} ${displayAstro.name}`}
                         className={`fixed flex flex-col z-40 pointer-events-auto max-md:transition-all max-md:duration-300 md:opacity-100 md:scale-100 md:translate-y-0 md:pointer-events-auto
                             md:top-24 md:right-0 md:bottom-0 md:left-auto md:w-[300px] md:rounded-none
                             ${isInfoOpen
@@ -105,7 +106,7 @@ export default function SidePanel() {
                                         }
                                     }
                                 }}
-                                aria-label="Fermer les informations"
+                                aria-label={m.closeInformation}
                                 className={`absolute top-4 right-4 z-10 p-1.5 rounded-full bg-black/40 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer backdrop-blur-md flex ${currentView !== '3D' ? 'md:hidden' : 'md:flex'}`}
                             >
                                 <X size={14} className="text-white/60" />
@@ -170,7 +171,7 @@ export default function SidePanel() {
 
                                 <div className="flex justify-center mb-4">
                                     <span className={`text-[9px] font-mono uppercase tracking-[0.12em] px-2 py-0.5 rounded-full border ${typeBadgeColor(displayAstro.type)}`}>
-                                        {typeLabel(displayAstro.type)}
+                                        {typeLabel(displayAstro.type, m)}
                                     </span>
                                 </div>
 
@@ -179,7 +180,7 @@ export default function SidePanel() {
                                     <div className="flex items-center gap-1.5 mb-1">
                                         <Maximize2 size={11} className="text-emerald-400" />
                                         <span className="text-[8px] font-mono uppercase tracking-widest text-emerald-400/80">
-                                            {displayAstro.relativeSizeLabel || 'Taille relative'}
+                                            {displayAstro.relativeSizeLabel || m.relativeSize}
                                         </span>
                                     </div>
                                     <p className="text-lg font-bold text-emerald-300 leading-tight">
@@ -195,7 +196,7 @@ export default function SidePanel() {
                                     <div className="flex items-center gap-1.5 mb-1">
                                         <Route size={11} className="text-emerald-400" />
                                         <span className="text-[8px] font-mono uppercase tracking-widest text-emerald-400/80">
-                                            Distance relative
+                                            {m.relativeDistance}
                                         </span>
                                     </div>
                                     <p className="text-lg font-bold text-emerald-300 leading-tight">
@@ -211,7 +212,7 @@ export default function SidePanel() {
                                     <div className="flex items-center gap-1.5 mb-1">
                                         <Telescope size={11} className="text-white/40" />
                                         <span className="text-[8px] font-mono uppercase tracking-widest text-white/40">
-                                            Description
+                                            {m.description}
                                         </span>
                                     </div>
                                     <p className="text-[11px] text-white/60 leading-relaxed">
@@ -224,27 +225,27 @@ export default function SidePanel() {
                                     <div className="flex items-center gap-1.5 mb-2">
                                         <Ruler size={11} className="text-white/30" />
                                         <span className="text-[8px] font-mono uppercase tracking-widest text-white/30">
-                                            Données Scientifiques
+                                            {m.scientificData}
                                         </span>
                                     </div>
                                     <div className="space-y-1 text-[10px] font-mono text-white/25">
                                         {currentView === 'SIZE' && sorted.length > 0 && (
                                             <div className="flex justify-between">
-                                                <span>Rang</span>
-                                                <span className="text-emerald-400">{currentIndex + 1}e / {sorted.length}</span>
+                                                <span>{m.rank}</span>
+                                                <span className="text-emerald-400">{currentIndex + 1} / {sorted.length}</span>
                                             </div>
                                         )}
                                         <div className="flex justify-between">
-                                            <span>Taille</span>
+                                            <span>{m.size}</span>
                                             <span className="text-white/40">{displayAstro.scientificSize}</span>
                                         </div>
                                         <div className="flex justify-between">
-                                            <span>Distance</span>
+                                            <span>{m.distance}</span>
                                             <span className="text-white/40">{displayAstro.scientificDistance}</span>
                                         </div>
                                     </div>
                                     <p className="mt-2 pt-2 border-t border-white/5 text-[8px] leading-relaxed text-white/25">
-                                        Valeurs arrondies. Les positions, orbites et rendus sont illustratifs et ne constituent pas une carte astronomique à l’échelle.
+                                        {m.scientificNotice}
                                     </p>
                                 </div>
 
@@ -252,7 +253,7 @@ export default function SidePanel() {
                                 {displayAstro.constellation && (
                                     <div className="p-2.5 rounded-lg bg-emerald-500/5 border border-emerald-500/10 text-center">
                                         <span className="text-[8px] font-mono uppercase tracking-widest text-emerald-400/60">
-                                            Constellation
+                                            {m.constellation}
                                         </span>
                                         <p className="text-sm text-emerald-300 font-semibold mt-0.5">
                                             {displayAstro.constellation}

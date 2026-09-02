@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { celestialObjects, constellationLines } from './celestialData';
+import { getCelestialObjects, getCelestialTranslationGaps } from './celestialTranslations';
+import { locales } from '../locales';
 
 describe('celestial data', () => {
   it('keeps the published catalogue size stable', () => {
@@ -44,5 +46,21 @@ describe('celestial data', () => {
     const children = celestialObjects.filter((object) => object.parentId);
     expect(children.length).toBeGreaterThan(0);
     expect(children.every((object) => ids.has(object.parentId!))).toBe(true);
+  });
+
+  it('publishes every catalogue entry in every maintained language', () => {
+    expect(getCelestialTranslationGaps()).toEqual([]);
+    for (const locale of locales) {
+      const localized = getCelestialObjects(locale);
+      expect(localized).toHaveLength(celestialObjects.length);
+      for (const object of localized) {
+        expect(object.name.trim()).not.toBe('');
+        expect(object.scientificSize.trim()).not.toBe('');
+        expect(object.relativeSize.trim()).not.toBe('');
+        expect(object.scientificDistance.trim()).not.toBe('');
+        expect(object.relativeDistance.trim()).not.toBe('');
+        expect(object.description.trim()).not.toBe('');
+      }
+    }
   });
 });

@@ -1,8 +1,10 @@
 import { useAstroStore } from '../store/useAstroStore';
 import { Orbit, Map, Scaling, Menu, X } from 'lucide-react';
 import {isDemoMode} from '../config/runtimeMode';
+import {LanguageSwitch, useI18n} from '../i18n';
 
 export default function Header() {
+    const {m} = useI18n();
     const currentView = useAstroStore((s) => s.currentView);
     const setView = useAstroStore((s) => s.setView);
     const isNavOpen = useAstroStore((s) => s.isNavOpen);
@@ -10,9 +12,9 @@ export default function Header() {
     const setCardVisible = useAstroStore((s) => s.setCardVisible);
 
     const views = [
-        { key: '3D' as const, label: 'Exploration 3D', icon: <Orbit size={14} /> },
-        { key: '2D' as const, label: 'Carte Tactique', icon: <Map size={14} /> },
-        { key: 'SIZE' as const, label: 'Comparaison', icon: <Scaling size={14} /> },
+        { key: '3D' as const, label: m.view3d, icon: <Orbit size={14} /> },
+        { key: '2D' as const, label: m.map, icon: <Map size={14} /> },
+        { key: 'SIZE' as const, label: m.comparison, icon: <Scaling size={14} /> },
     ];
 
     return (
@@ -29,7 +31,7 @@ export default function Header() {
                         <div className="flex flex-col justify-center">
                             <h1 className="text-lg font-bold text-white tracking-wide leading-none">AstroGuide</h1>
                             <p className="text-[9px] font-mono uppercase tracking-[0.12em] text-white/30 mt-1 leading-none">
-                                {isDemoMode ? 'Démonstration publique' : 'Exploration Spatiale'}
+                                {isDemoMode ? m.publicDemo : m.spaceExploration}
                             </p>
                         </div>
                     </div>
@@ -37,7 +39,7 @@ export default function Header() {
                     {/* Hamburger Menu Toggle (Mobile Only) */}
                     <button
                         onClick={() => setNavOpen(!isNavOpen)}
-                        aria-label={isNavOpen ? 'Fermer le menu de navigation' : 'Ouvrir le menu de navigation'}
+                        aria-label={isNavOpen ? m.closeNav : m.openNav}
                         aria-expanded={isNavOpen}
                         aria-controls="astro-navigation"
                         className="md:hidden p-2 rounded-lg bg-black/40 backdrop-blur-md border border-white/10 text-white/70 shadow-[0_4px_12px_rgba(0,0,0,0.8)] hover:bg-emerald-500/20 hover:text-emerald-400 transition-colors cursor-pointer"
@@ -47,7 +49,8 @@ export default function Header() {
                 </div>
 
                 {/* BLOC BOUTONS (Vue 3D / 2D) */}
-                <div className="hidden md:flex items-center pointer-events-auto pr-6">
+                <div className="hidden md:flex items-center gap-3 pointer-events-auto pr-6">
+                    <LanguageSwitch compact />
                     <div className="flex items-center gap-1 p-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10">
                         {views.map((v) => (
                             <button
