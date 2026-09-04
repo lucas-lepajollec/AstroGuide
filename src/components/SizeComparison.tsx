@@ -1,16 +1,16 @@
 import { useMemo, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { celestialObjects } from '../data/celestialData';
 import { useAstroStore } from '../store/useAstroStore';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useI18n } from '../i18n';
 
-function typeLabel(type: string) {
+function typeLabel(type: string, m: ReturnType<typeof useI18n>['m']) {
     switch (type) {
-        case 'star': return 'Étoile';
-        case 'planet': return 'Planète';
-        case 'galaxy': return 'Galaxie';
-        case 'blackhole': return 'Trou Noir';
-        case 'system': return 'Système';
+        case 'star': return m.star;
+        case 'planet': return m.planet;
+        case 'galaxy': return m.galaxy;
+        case 'blackhole': return m.blackHole;
+        case 'system': return m.system;
         default: return type;
     }
 }
@@ -27,6 +27,7 @@ function typeBadgeColor(type: string) {
 }
 
 export default function SizeComparison() {
+    const {m, objects} = useI18n();
     const selectedAstro = useAstroStore((s) => s.selectedAstro);
     const setSelectedAstro = useAstroStore((s) => s.setSelectedAstro);
     const comparisonIds = useAstroStore((s) => s.comparisonIds);
@@ -34,8 +35,8 @@ export default function SizeComparison() {
 
     // All objects sorted by size
     const allSorted = useMemo(
-        () => [...celestialObjects].sort((a, b) => a.sizeKm - b.sizeKm),
-        []
+        () => [...objects].sort((a, b) => a.sizeKm - b.sizeKm),
+        [objects]
     );
 
     // Filtered sorted list from store
@@ -109,13 +110,13 @@ export default function SizeComparison() {
                     <div className="flex items-center justify-between px-6 pt-4 pb-2">
                         <div>
                             <h2 className="text-sm font-mono uppercase tracking-[0.2em] text-emerald-400">
-                                Comparaison des Tailles
+                                {m.comparisonTitle}
                             </h2>
                             <p className="text-[9px] font-mono text-white/30 mt-1">
-                                Du plus petit au plus grand • {sorted.length}/{allSorted.length} éléments
+                                {m.smallestToLargest} • {sorted.length}/{allSorted.length} {m.items}
                             </p>
                             <p className="text-[8px] font-mono text-white/20 mt-1">
-                                Diamètres ou étendues approximatifs • taille minimale d’affichage appliquée
+                                {m.sizeNotice}
                             </p>
                         </div>
                         {current && (
@@ -129,7 +130,7 @@ export default function SizeComparison() {
                     {!current ? (
                         <div className="flex-1 flex items-center justify-center">
                             <p className="text-white/30 font-mono text-sm text-center px-6">
-                                Sélectionnez des éléments dans le menu à gauche
+                                {m.selectComparison}
                             </p>
                         </div>
                     ) : (
@@ -138,7 +139,7 @@ export default function SizeComparison() {
                             <button
                                 onClick={goPrev}
                                 disabled={currentIndex === 0}
-                                aria-label="Élément plus petit"
+                                aria-label={m.smallerItem}
                                 className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-2.5 rounded-full bg-black/60 backdrop-blur-md border border-emerald-500/30 hover:bg-emerald-500/20 transition-all disabled:opacity-20 cursor-pointer text-emerald-400 shadow-lg shadow-black/40"
                             >
                                 <ChevronLeft size={18} />
@@ -148,7 +149,7 @@ export default function SizeComparison() {
                             <button
                                 onClick={goNext}
                                 disabled={currentIndex === sorted.length - 1}
-                                aria-label="Élément plus grand"
+                                aria-label={m.largerItem}
                                 className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-2.5 rounded-full bg-black/60 backdrop-blur-md border border-emerald-500/30 hover:bg-emerald-500/20 transition-all disabled:opacity-20 cursor-pointer text-emerald-400 shadow-lg shadow-black/40"
                             >
                                 <ChevronRight size={18} />
@@ -174,7 +175,7 @@ export default function SizeComparison() {
                                     {prev2 && (
                                         <motion.button
                                             type="button"
-                                            aria-label={`Afficher ${prev2.name}`}
+                                            aria-label={`${m.showObject} ${prev2.name}`}
                                             key={`p2-${prev2.id}`}
                                             initial={{ opacity: 0, x: -60, scale: 0.5 }}
                                             animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -272,7 +273,7 @@ export default function SizeComparison() {
                                     {prev1 && (
                                         <motion.button
                                             type="button"
-                                            aria-label={`Afficher ${prev1.name}`}
+                                            aria-label={`${m.showObject} ${prev1.name}`}
                                             key={`p1-${prev1.id}`}
                                             initial={{ opacity: 0, x: -40, scale: 0.7 }}
                                             animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -365,7 +366,7 @@ export default function SizeComparison() {
                                             <p className="text-[11px] font-mono text-white/70 mt-2 text-center max-w-[100px] truncate">{prev1.name}</p>
                                             {prev1.sizeKm < current.sizeKm && (
                                                 <p className="text-[9px] font-mono text-white/40 mt-0.5">
-                                                    {(current.sizeKm / prev1.sizeKm).toFixed(1)}× plus petit
+                                                    {(current.sizeKm / prev1.sizeKm).toFixed(1)}{m.timesSmaller}
                                                 </p>
                                             )}
                                         </motion.button>
@@ -484,7 +485,7 @@ export default function SizeComparison() {
                                         {/* Name */}
                                         <h3 className="text-lg font-bold text-white mt-3">{current.name}</h3>
                                         <span className={`text-[8px] font-mono uppercase tracking-[0.15em] px-2 py-0.5 rounded-full border mt-1 ${typeBadgeColor(current.type)}`}>
-                                            {typeLabel(current.type)}
+                                            {typeLabel(current.type, m)}
                                         </span>
                                     </motion.div>
                                 </AnimatePresence>

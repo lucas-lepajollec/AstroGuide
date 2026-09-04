@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useAstroStore } from '../store/useAstroStore';
-import { celestialObjects, type CelestialObject } from '../data/celestialData';
+import type { CelestialObject } from '../data/celestialData';
+import { LanguageSwitch, useI18n } from '../i18n';
 import {
     ChevronLeft,
     ChevronRight,
@@ -21,28 +22,8 @@ import {
 
 type FilterType = 'all' | 'star' | 'planet' | 'galaxy' | 'blackhole' | 'constellation';
 
-const filters: { key: FilterType; label: string; icon: React.ReactNode }[] = [
-    { key: 'all', label: 'Tout', icon: <List size={12} /> },
-    { key: 'star', label: 'Étoiles', icon: <Sun size={12} /> },
-    { key: 'planet', label: 'Planètes', icon: <Globe2 size={12} /> },
-    { key: 'galaxy', label: 'Galaxies', icon: <Sparkles size={12} /> },
-    { key: 'blackhole', label: 'Trous Noirs', icon: <Circle size={12} /> },
-    { key: 'constellation', label: 'Constellations', icon: <Waypoints size={12} /> },
-];
-
-// Get unique constellations
-const constellationGroups = (() => {
-    const groups = new Map<string, CelestialObject[]>();
-    celestialObjects.forEach((obj) => {
-        if (obj.constellation) {
-            if (!groups.has(obj.constellation)) groups.set(obj.constellation, []);
-            groups.get(obj.constellation)!.push(obj);
-        }
-    });
-    return groups;
-})();
-
 export default function NavPanel() {
+    const {m, objects} = useI18n();
     const selectedAstro = useAstroStore((s) => s.selectedAstro);
     const setSelectedAstro = useAstroStore((s) => s.setSelectedAstro);
     const currentView = useAstroStore((s) => s.currentView);
@@ -60,6 +41,25 @@ export default function NavPanel() {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [isMobileLayout, setIsMobileLayout] = useState(() => window.matchMedia('(max-width: 1023px)').matches);
 
+    const filters: { key: FilterType; label: string; icon: React.ReactNode }[] = [
+        { key: 'all', label: m.all, icon: <List size={12} /> },
+        { key: 'star', label: m.stars, icon: <Sun size={12} /> },
+        { key: 'planet', label: m.planets, icon: <Globe2 size={12} /> },
+        { key: 'galaxy', label: m.galaxies, icon: <Sparkles size={12} /> },
+        { key: 'blackhole', label: m.blackHoles, icon: <Circle size={12} /> },
+        { key: 'constellation', label: m.constellations, icon: <Waypoints size={12} /> },
+    ];
+
+    const constellationGroups = useMemo(() => {
+        const groups = new Map<string, CelestialObject[]>();
+        objects.forEach((obj) => {
+            if (!obj.constellation) return;
+            if (!groups.has(obj.constellation)) groups.set(obj.constellation, []);
+            groups.get(obj.constellation)!.push(obj);
+        });
+        return groups;
+    }, [objects]);
+
     useEffect(() => {
         const mediaQuery = window.matchMedia('(max-width: 1023px)');
         const updateLayout = () => setIsMobileLayout(mediaQuery.matches);
@@ -70,22 +70,22 @@ export default function NavPanel() {
     const isSizeView = currentView === 'SIZE';
 
     const filteredObjects = useMemo(() => {
-        let objs = celestialObjects;
+        let objs = objects;
         if (activeFilter === 'constellation') {
-            objs = celestialObjects.filter((o) => o.constellation);
+            objs = objects.filter((o) => o.constellation);
         } else if (activeFilter !== 'all') {
-            objs = celestialObjects.filter((o) => o.type === activeFilter);
+            objs = objects.filter((o) => o.type === activeFilter);
         }
         if (searchQuery.trim()) {
             const q = searchQuery.toLowerCase();
             objs = objs.filter((o) =>
                 o.name.toLowerCase().includes(q) ||
-                o.type.toLowerCase().includes(q) ||
+                objectTypeLabel(o.type, m).toLowerCase().includes(q) ||
                 o.constellation?.toLowerCase().includes(q)
             );
         }
         return objs;
-    }, [activeFilter, searchQuery]);
+    }, [activeFilter, searchQuery, objects, m]);
 
     const currentIndex = useMemo(() => {
         if (!selectedAstro) return -1;
@@ -117,7 +117,7 @@ export default function NavPanel() {
     return (
         <aside
             id="astro-navigation"
-            aria-label="Navigation des objets célestes"
+            aria-label={m.celestialNavigation}
             aria-hidden={isMobileLayout && !isNavOpen}
             inert={isMobileLayout && !isNavOpen ? true : undefined}
             className={`fixed z-50 bg-black/90 md:bg-black/70 backdrop-blur-xl flex flex-col transition-all duration-300 transform-gpu
@@ -142,23 +142,24 @@ export default function NavPanel() {
                         aria-pressed={currentView === '2D'}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-mono uppercase tracking-wider transition-all cursor-pointer ${currentView === '2D' ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-300' : 'text-white/40 hover:text-white/70 border border-transparent'}`}
                     >
-                        <MapIcon size={14} /> <span>Carte</span>
+                        <MapIcon size={14} /> <span>{m.map}</span>
                     </button>
                     <button
                         onClick={() => { setView('SIZE'); setNavOpen(false); setCardVisible(true); }}
                         aria-pressed={currentView === 'SIZE'}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-mono uppercase tracking-wider transition-all cursor-pointer ${currentView === 'SIZE' ? 'bg-emerald-500/20 border border-emerald-500/30 text-emerald-300' : 'text-white/40 hover:text-white/70 border border-transparent'}`}
                     >
-                        <Scaling size={14} /> <span>Taille</span>
+                        <Scaling size={14} /> <span>{m.size}</span>
                     </button>
                 </div>
+                <LanguageSwitch compact />
             </div>
 
             {/* Navigation Arrows */}
             <div className="flex items-center justify-between px-3 py-2.5 border-b border-white/5">
                 <button
                     onClick={goPrev}
-                    aria-label="Objet précédent"
+                    aria-label={m.previousObject}
                     className="p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-emerald-500/15 hover:border-emerald-500/30 transition-all cursor-pointer"
                 >
                     <ChevronLeft size={14} className="text-emerald-400" />
@@ -166,11 +167,11 @@ export default function NavPanel() {
                 <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
                     {currentIndex >= 0
                         ? `${currentIndex + 1} / ${filteredObjects.length}`
-                        : `${filteredObjects.length} objets`}
+                        : `${filteredObjects.length} ${m.objects}`}
                 </span>
                 <button
                     onClick={goNext}
-                    aria-label="Objet suivant"
+                    aria-label={m.nextObject}
                     className="p-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-emerald-500/15 hover:border-emerald-500/30 transition-all cursor-pointer"
                 >
                     <ChevronRight size={14} className="text-emerald-400" />
@@ -180,12 +181,12 @@ export default function NavPanel() {
             {/* Search Bar */}
             <div className="px-2.5 py-2 border-b border-white/5">
                 <div className="relative">
-                    <label htmlFor="astro-search" className="sr-only">Rechercher un objet céleste</label>
+                    <label htmlFor="astro-search" className="sr-only">{m.searchLabel}</label>
                     <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-white/25" />
                     <input
                         id="astro-search"
                         type="text"
-                        placeholder="Rechercher..."
+                        placeholder={m.search}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full pl-7 pr-2.5 py-1.5 rounded-lg bg-white/5 border border-white/8 text-[10px] font-mono text-white/80 placeholder:text-white/20 focus:outline-none focus:border-emerald-500/30 focus:bg-emerald-500/5 transition-all"
@@ -238,13 +239,13 @@ export default function NavPanel() {
                         onClick={selectAllComparison}
                         className="flex-1 flex items-center justify-center gap-1 px-2 py-1 rounded-md text-[9px] font-mono uppercase tracking-wider border cursor-pointer transition-all bg-emerald-500/5 border-emerald-500/15 text-emerald-400 hover:bg-emerald-500/15"
                     >
-                        <Check size={10} /> Tout
+                        <Check size={10} /> {m.selectAll}
                     </button>
                     <button
                         onClick={deselectAllComparison}
                         className="flex-1 flex items-center justify-center gap-1 px-2 py-1 rounded-md text-[9px] font-mono uppercase tracking-wider border cursor-pointer transition-all bg-white/3 border-white/8 text-white/40 hover:bg-red-500/10 hover:border-red-500/15 hover:text-red-300"
                     >
-                        <X size={10} /> Aucun
+                        <X size={10} /> {m.selectNone}
                     </button>
                 </div>
             )}
@@ -290,7 +291,7 @@ export default function NavPanel() {
                         ))
                     ) : (
                         <p role="status" className="px-4 py-8 text-center text-[11px] font-mono text-white/40">
-                            Aucun objet ne correspond à cette recherche.
+                            {m.noResults}
                         </p>
                     )
                 )}
@@ -315,6 +316,7 @@ function ObjectRow({
     onSelect: (obj: CelestialObject) => void;
     onToggle: (id: string) => void;
 }) {
+    const {m} = useI18n();
     return (
         <div
             className={`w-full text-left px-3 py-1.5 flex items-center gap-2 transition-all border-l-2 ${isActive
@@ -330,7 +332,7 @@ function ObjectRow({
                         onToggle(obj.id);
                     }}
                     aria-pressed={isIncluded}
-                    aria-label={`${isIncluded ? 'Retirer' : 'Ajouter'} ${obj.name} de la comparaison`}
+                    aria-label={`${isIncluded ? m.removeComparison : m.addComparison} ${obj.name} ${m.comparisonSuffix}`}
                     className={`w-3.5 h-3.5 rounded border shrink-0 flex items-center justify-center transition-all cursor-pointer ${isIncluded
                         ? 'bg-emerald-500/30 border-emerald-500/50'
                         : 'bg-white/5 border-white/15'
@@ -358,10 +360,18 @@ function ObjectRow({
                         {obj.name}
                     </p>
                     <p className="text-[8px] font-mono text-white/25 uppercase">
-                        {obj.constellation || obj.type}
+                        {obj.constellation || objectTypeLabel(obj.type, m)}
                     </p>
                 </div>
             </button>
         </div>
     );
+}
+
+function objectTypeLabel(type: CelestialObject['type'], m: ReturnType<typeof useI18n>['m']) {
+    if (type === 'star') return m.star;
+    if (type === 'planet') return m.planet;
+    if (type === 'galaxy') return m.galaxy;
+    if (type === 'blackhole') return m.blackHole;
+    return m.system;
 }

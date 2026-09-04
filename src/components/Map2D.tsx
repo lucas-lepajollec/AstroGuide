@@ -1,8 +1,9 @@
 import { useMemo, useEffect, useState, useRef } from 'react';
 import { motion } from 'motion/react';
-import { celestialObjects, constellationLines, type CelestialObject } from '../data/celestialData';
+import { constellationLines, type CelestialObject } from '../data/celestialData';
 import { useAstroStore } from '../store/useAstroStore';
 import { Eye, Focus, Plus, Minus } from 'lucide-react';
+import { useI18n } from '../i18n';
 
 function mapRange(v: number, inMin: number, inMax: number, outMin: number, outMax: number) {
     return ((v - inMin) / (inMax - inMin)) * (outMax - outMin) + outMin;
@@ -40,6 +41,7 @@ function SweepLine() {
 }
 
 export default function Map2D() {
+    const {m, objects} = useI18n();
     const setSelectedAstro = useAstroStore((s) => s.setSelectedAstro);
     const setView = useAstroStore((s) => s.setView);
     const selectedAstro = useAstroStore((s) => s.selectedAstro);
@@ -48,10 +50,10 @@ export default function Map2D() {
     // Ensure a default selection so the side panel is always open in MAP view
     useEffect(() => {
         if (!selectedAstro) {
-            setSelectedAstro(celestialObjects.find(o => o.id === 'sun') || null);
+            setSelectedAstro(objects.find(o => o.id === 'sun') || null);
             setCardVisible(true);
         }
-    }, [selectedAstro, setSelectedAstro, setCardVisible]);
+    }, [selectedAstro, setSelectedAstro, setCardVisible, objects]);
 
     const [viewTransform, setViewTransform] = useState({ scale: 1, x: 0, y: 0 });
     const [isGesturing, setIsGesturing] = useState(false);
@@ -87,7 +89,7 @@ export default function Map2D() {
             const astroId = el?.closest('[data-astro-id]')?.getAttribute('data-astro-id');
             if (astroId) {
                 gestureRef.current.type = 'select'; // Drag to select
-                const obj = celestialObjects.find(o => o.id === astroId);
+                const obj = objects.find(o => o.id === astroId);
                 if (obj && selectedAstro?.id !== obj.id) {
                     setSelectedAstro(obj);
                     setCardVisible(true);
@@ -184,7 +186,7 @@ export default function Map2D() {
 
     const mapped = useMemo(() => {
         // Only map non-systemCircle objects for dots
-        const dotObjects = celestialObjects.filter((o) => !o.systemCircle);
+        const dotObjects = objects.filter((o) => !o.systemCircle);
 
         // Find the absolute maximum distance from center (0,0) to ensure perfect radial bounds
         let maxDist = 0;
@@ -202,7 +204,7 @@ export default function Map2D() {
             px: mapRange(obj.position[0], -limit, limit, 8, 92),
             py: mapRange(obj.position[2], -limit, limit, 8, 92),
         }));
-    }, []);
+    }, [objects]);
 
     // Solar system bounding circle
     const solarSystemCircle = (() => {
@@ -249,7 +251,7 @@ export default function Map2D() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
             className="absolute inset-0 z-30 bg-black/85 backdrop-blur-md touch-none overflow-hidden"
-            aria-label="Carte illustrative des objets célestes"
+            aria-label={m.mapRegion}
             aria-describedby="map-scale-notice"
             role="region"
             onPointerDown={handlePointerDown}
@@ -274,7 +276,7 @@ export default function Map2D() {
                         >
                             <Eye size={14} className="text-emerald-400" />
                             <span className="text-[11px] font-mono uppercase tracking-wider text-emerald-300">
-                                Voir l'élément
+                                {m.viewIn3d}
                             </span>
                         </motion.button>
                     )}
@@ -282,24 +284,24 @@ export default function Map2D() {
                     <div className="flex md:flex-row flex-col gap-2">
                         <button
                             onClick={() => setViewTransform(v => getClampedTransform(v.scale * 1.5, v.x * 1.5, v.y * 1.5))}
-                            aria-label="Zoomer sur la carte"
+                            aria-label={m.zoomIn}
                             className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all cursor-pointer text-white/70"
                         >
                             <Plus size={16} />
                         </button>
                         <button
                             onClick={() => setViewTransform(v => getClampedTransform(v.scale / 1.5, v.x / 1.5, v.y / 1.5))}
-                            aria-label="Dézoomer sur la carte"
+                            aria-label={m.zoomOut}
                             className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all cursor-pointer text-white/70"
                         >
                             <Minus size={16} />
                         </button>
                         <button
                             onClick={() => setViewTransform({ scale: 1, x: 0, y: 0 })}
-                            aria-label="Réinitialiser la carte"
+                            aria-label={m.resetMap}
                             disabled={viewTransform.scale <= 1}
                             className={`p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all cursor-pointer text-white/70 ${viewTransform.scale > 1 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-                            title="Réinitialiser la vue"
+                            title={m.resetView}
                         >
                             <Focus size={16} />
                         </button>
@@ -344,7 +346,7 @@ export default function Map2D() {
                                     fontSize={Math.max(4, 9 / viewTransform.scale)}
                                     fontFamily="monospace"
                                 >
-                                    SYSTÈME SOLAIRE
+                                    {m.solarSystem}
                                 </text>
                             </svg>
                         )}
@@ -402,7 +404,7 @@ export default function Map2D() {
                                     {/* Dot hit-target - strict size prevents invisible overlap blocking clicks */}
                                     <button
                                         data-astro-id={obj.id}
-                                        aria-label={`Sélectionner ${obj.name}`}
+                                        aria-label={`${m.showObject} ${obj.name}`}
                                         aria-pressed={isSelected}
                                         onClick={(e) => {
                                             e.stopPropagation();
@@ -435,15 +437,15 @@ export default function Map2D() {
             </div>
 
             <p id="map-scale-notice" className="absolute bottom-10 left-1/2 -translate-x-1/2 text-center text-[8px] md:text-[9px] font-mono text-white/30 tracking-wide pointer-events-none">
-                Positions et distances illustratives — carte non astronomique
+                {m.mapNotice}
             </p>
 
             {/* Legend */}
             <div className="absolute bottom-4 md:bottom-4 left-1/2 -translate-x-1/2 flex gap-3 md:gap-6 w-max text-[8px] md:text-[10px] whitespace-nowrap font-mono text-white/40 uppercase tracking-widest pointer-events-none">
-                <span>★ Étoile</span>
-                <span>● Planète</span>
-                <span>✦ Galaxie</span>
-                <span>◉ Trou noir</span>
+                <span>★ {m.star}</span>
+                <span>● {m.planet}</span>
+                <span>✦ {m.galaxy}</span>
+                <span>◉ {m.blackHole}</span>
             </div>
         </motion.div >
     );

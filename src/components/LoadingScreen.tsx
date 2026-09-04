@@ -1,6 +1,8 @@
 import { motion } from 'motion/react';
+import {useI18n} from '../i18n';
 
 export default function LoadingScreen() {
+    const {m} = useI18n();
     return (
         <motion.div
             initial={{ opacity: 1 }}
@@ -32,7 +34,7 @@ export default function LoadingScreen() {
                     AstroGuide
                 </h1>
                 <p className="text-xs font-mono tracking-[0.3em] text-emerald-400/80 uppercase">
-                    Initialisation Spatiale
+                    {m.loading}
                 </p>
 
                 {/* Loading Bar */}
