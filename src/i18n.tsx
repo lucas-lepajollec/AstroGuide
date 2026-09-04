@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components -- the provider, hook, and language control form one typed i18n module */
 import {createContext, useContext, useEffect, useMemo, useState, type ReactNode} from 'react';
+import {ChevronDown} from 'lucide-react';
 import {getCelestialObjects} from './data/celestialTranslations';
 import {locales, type Locale} from './locales';
 
@@ -96,8 +97,11 @@ export function LanguageSwitch({compact = false}: {compact?: boolean}) {
   const {locale, setLocale, m} = useI18n();
   return <label className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-wider text-white/40">
     <span className={compact ? 'sr-only' : ''}>{m.language}</span>
-    <select aria-label={m.language} value={locale} onChange={(event) => setLocale(event.target.value as Locale)} className="rounded-full border border-white/10 bg-black/70 px-2 py-1.5 text-[10px] text-white/70 outline-none focus:border-emerald-500/50">
-      <option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option><option value="de">DE</option>
-    </select>
+    <span className="relative inline-flex h-9 items-center">
+      <select aria-label={m.language} value={locale} onChange={(event) => setLocale(event.target.value as Locale)} className="h-9 min-w-[66px] appearance-none rounded-full border border-white/10 bg-black/70 py-0 pl-3 pr-8 text-[10px] text-white/70 outline-none transition-colors hover:border-white/20 focus:border-emerald-500/50">
+        <option value="en">EN</option><option value="fr">FR</option><option value="es">ES</option><option value="de">DE</option>
+      </select>
+      <ChevronDown className="pointer-events-none absolute right-2.5 h-3 w-3 text-white/45" aria-hidden="true" />
+    </span>
   </label>;
 }
