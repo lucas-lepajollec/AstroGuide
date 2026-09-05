@@ -1,128 +1,160 @@
 import {useEffect, useRef, useState} from 'react';
-import {CircleHelp, Map, Orbit, RotateCcw, Scaling, ShieldCheck, Sparkles} from 'lucide-react';
+import {CircleHelp, RotateCcw, ShieldCheck} from 'lucide-react';
 import {useAstroStore} from '../store/useAstroStore';
 import {useI18n} from '../i18n';
 
+const INTRO_KEY = 'lh-demo-intro-seen';
+const LINKS = {
+  site: 'https://astroguide.lucas-homelab.fr',
+  docs: 'https://docs.astroguide.lucas-homelab.fr',
+  source: 'https://github.com/lucas-lepajollec/AstroGuide',
+};
+
+function readIntroSeen() {
+  try {
+    return sessionStorage.getItem(INTRO_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
 export default function DemoExperience() {
-  const {m, objects} = useI18n();
-  const [isGuideOpen, setGuideOpen] = useState(true);
+  const {m} = useI18n();
+  const [isGuideOpen, setGuideOpen] = useState(() => !readIntroSeen());
   const [announcement, setAnnouncement] = useState('');
   const dialogRef = useRef<HTMLDialogElement>(null);
-  const guideTitleRef = useRef<HTMLHeadingElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const resetExploration = useAstroStore((state) => state.resetExploration);
 
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
-
     if (isGuideOpen && !dialog.open) {
       dialog.showModal();
-      guideTitleRef.current?.focus({preventScroll: true});
+      titleRef.current?.focus({preventScroll: true});
       dialog.scrollTop = 0;
     }
     if (!isGuideOpen && dialog.open) dialog.close();
   }, [isGuideOpen]);
 
+  const closeGuide = () => {
+    try {
+      sessionStorage.setItem(INTRO_KEY, '1');
+    } catch {
+      /* ignore */
+    }
+    setGuideOpen(false);
+  };
+
   const resetDemo = () => {
+    try {
+      sessionStorage.removeItem(INTRO_KEY);
+    } catch {
+      /* ignore */
+    }
     resetExploration();
     setAnnouncement(m.resetting);
     window.location.reload();
   };
 
+  const cards = [
+    {title: m.demoTry, text: m.demoTryBody},
+    {title: m.demoSim, text: m.demoSimBody},
+    {title: m.demoNever, text: m.demoNeverBody},
+  ];
+
   return (
     <>
-      <div className="fixed bottom-3 right-3 z-[70] flex items-center rounded-full border border-emerald-400/25 bg-[#050b0a]/90 p-1 text-white shadow-2xl shadow-black/70 backdrop-blur-xl md:bottom-auto md:right-auto md:left-1/2 md:top-4 md:-translate-x-1/2">
-        <button
-          type="button"
-          onClick={() => setGuideOpen(true)}
-          className="flex min-h-9 items-center gap-2 rounded-full px-3 font-mono text-[10px] uppercase tracking-[0.16em] text-emerald-200 transition-colors hover:bg-emerald-400/10"
-          aria-label={m.demoInfo}
-        >
-          <Sparkles size={13} aria-hidden="true" />
-          <span>{m.demo}</span>
-          <CircleHelp size={13} className="text-white/45" aria-hidden="true" />
-        </button>
-        <span className="h-5 w-px bg-white/10" aria-hidden="true" />
-        <button
-          type="button"
-          onClick={resetDemo}
-          className="grid size-9 place-items-center rounded-full text-white/55 transition-colors hover:bg-white/10 hover:text-white"
-          aria-label={m.resetDemo}
-          title={m.reset}
-        >
-          <RotateCcw size={14} aria-hidden="true" />
-        </button>
+      <div className={`lh-demo-chip pointer-events-none fixed bottom-4 right-4 z-[80] ${isGuideOpen ? 'invisible' : ''}`}>
+        <div className="pointer-events-auto flex items-center rounded-full border border-white/12 bg-[#0b0e13]/92 p-1 text-white shadow-[0_12px_40px_rgba(0,0,0,0.45)] backdrop-blur-xl">
+          <button
+            type="button"
+            onClick={() => setGuideOpen(true)}
+            className="flex min-h-9 items-center gap-2 rounded-full px-3 text-[11px] font-semibold tracking-[0.14em] uppercase text-white/90 transition-colors hover:bg-white/8"
+            aria-label={m.demoInfo}
+          >
+            <span>{m.demo}</span>
+            <CircleHelp size={14} className="text-white/45" aria-hidden="true" />
+          </button>
+          <span className="h-4 w-px bg-white/12" aria-hidden="true" />
+          <button
+            type="button"
+            onClick={resetDemo}
+            className="grid size-9 place-items-center rounded-full text-white/55 transition-colors hover:bg-white/10 hover:text-white"
+            aria-label={m.resetDemo}
+            title={m.reset}
+          >
+            <RotateCcw size={14} aria-hidden="true" />
+          </button>
+        </div>
       </div>
 
       <p className="sr-only" aria-live="polite">{announcement}</p>
 
       <dialog
         ref={dialogRef}
+        onClick={(event) => {
+          if (event.target === dialogRef.current) closeGuide();
+        }}
         onCancel={(event) => {
           event.preventDefault();
-          setGuideOpen(false);
+          closeGuide();
         }}
-        onClose={() => setGuideOpen(false)}
-        aria-labelledby="demo-guide-title"
-        aria-describedby="demo-guide-description"
-        className="m-auto max-h-[calc(100dvh-2rem)] w-[min(92vw,680px)] max-w-none overflow-x-hidden overflow-y-auto rounded-[28px] border border-white/10 bg-[#050807]/95 p-0 text-white shadow-[0_30px_120px_rgba(0,0,0,0.9)] backdrop-blur-2xl backdrop:bg-black/80"
+        onClose={closeGuide}
+        aria-labelledby="lh-demo-title"
+        aria-describedby="lh-demo-body"
+        className="lh-demo-dialog m-auto max-h-[calc(100dvh-1.5rem)] w-[min(92vw,640px)] max-w-none overflow-x-hidden overflow-y-auto rounded-[28px] border border-white/10 bg-[#0b0e13] p-0 text-white shadow-[0_30px_120px_rgba(0,0,0,0.72)] backdrop:bg-black/72"
       >
-        <div className="demo-guide-content relative overflow-hidden p-5 sm:p-8">
-          <div className="pointer-events-none absolute inset-x-16 -top-32 h-64 rounded-full bg-emerald-400/15 blur-3xl" aria-hidden="true" />
+        <div className="relative overflow-hidden px-5 py-6 sm:px-8 sm:py-8">
+          <div className="mb-5 flex items-center justify-between gap-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[10px] font-semibold tracking-[0.16em] uppercase text-white/70">
+              <ShieldCheck size={13} aria-hidden="true" />
+              {m.publicDemo}
+            </div>
+          </div>
 
-          <div className="relative">
-            <div className="demo-guide-header mb-5 flex items-center justify-between gap-4">
-              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/8 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-emerald-200">
-                <ShieldCheck size={13} aria-hidden="true" />
-                {m.publicDemo}
+          <h2 ref={titleRef} id="lh-demo-title" tabIndex={-1} className="max-w-xl text-[1.7rem] font-semibold tracking-tight outline-none sm:text-4xl">
+            {m.demoTitle}
+          </h2>
+          <p id="lh-demo-body" className="mt-3 max-w-xl text-sm leading-6 text-white/55 sm:text-[15px]">
+            {m.demoDescription}
+          </p>
+
+          <div className="mt-6 grid gap-2 sm:grid-cols-3 sm:gap-3">
+            {cards.map((card) => (
+              <div key={card.title} className="rounded-2xl border border-white/8 bg-white/[0.035] p-3.5">
+                <h3 className="text-[11px] font-semibold tracking-[0.08em] uppercase text-white/80">{card.title}</h3>
+                <p className="mt-2 text-xs leading-5 text-white/42">{card.text}</p>
               </div>
-              <span className="font-mono text-[10px] uppercase tracking-widest text-white/30">
-                {objects.length} {m.objects}
-              </span>
-            </div>
+            ))}
+          </div>
 
-            <h2 ref={guideTitleRef} id="demo-guide-title" tabIndex={-1} className="demo-guide-title max-w-xl text-3xl font-semibold tracking-tight sm:text-4xl">
-              {m.demoTitle}
-            </h2>
-            <p id="demo-guide-description" className="demo-guide-copy mt-3 max-w-2xl text-sm leading-6 text-white/55 sm:text-[15px]">
-              {m.demoDescription}
-            </p>
+          <p className="mt-5 rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-3 text-xs leading-5 text-white/42">
+            {m.demoLimits}
+          </p>
 
-            <div className="demo-guide-grid mt-5 grid gap-2 sm:mt-7 sm:grid-cols-3 sm:gap-3">
-              {[
-                {icon: Orbit, title: m.view3d, text: m.demo3dText},
-                {icon: Map, title: m.map, text: m.demoMapText},
-                {icon: Scaling, title: m.comparison, text: m.demoComparisonText},
-              ].map(({icon: Icon, title, text}) => (
-                <div key={title} className="demo-guide-card flex items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.035] p-3 sm:block sm:p-4">
-                  <Icon size={18} className="shrink-0 text-emerald-300" aria-hidden="true" />
-                  <h3 className="text-sm font-medium text-white/90 sm:mt-3">{title}</h3>
-                  <p className="demo-feature-description mt-1.5 hidden text-xs leading-5 text-white/40 sm:block">{text}</p>
-                </div>
-              ))}
-            </div>
+          <nav className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-xs text-white/50" aria-label={m.publicDemo}>
+            <a className="underline decoration-white/20 underline-offset-4 hover:text-white" href={LINKS.site} target="_blank" rel="noreferrer">{m.demoSite}</a>
+            <a className="underline decoration-white/20 underline-offset-4 hover:text-white" href={LINKS.docs} target="_blank" rel="noreferrer">{m.demoDocs}</a>
+            <a className="underline decoration-white/20 underline-offset-4 hover:text-white" href={LINKS.source} target="_blank" rel="noreferrer">{m.demoSource}</a>
+          </nav>
 
-            <div className="demo-guide-limits mt-4 rounded-2xl border border-amber-200/10 bg-amber-100/[0.035] px-4 py-3 text-xs leading-5 text-white/45 sm:mt-6">
-              {m.demoLimits}
-            </div>
-
-            <div className="demo-guide-actions mt-5 flex flex-col gap-3 sm:mt-7 sm:flex-row sm:justify-end">
-              <button
-                type="button"
-                onClick={() => setGuideOpen(false)}
-                className="min-h-11 rounded-xl bg-emerald-400 px-6 text-sm font-semibold text-[#032016] transition-colors hover:bg-emerald-300 sm:order-2"
-              >
-                {m.startExploration}
-              </button>
-              <button
-                type="button"
-                onClick={resetDemo}
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-white/10 px-4 text-sm text-white/55 transition-colors hover:bg-white/5 hover:text-white sm:order-1"
-              >
-                <RotateCcw size={15} aria-hidden="true" />
-                {m.startOver}
-              </button>
-            </div>
+          <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              onClick={resetDemo}
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-white/10 px-4 text-sm text-white/60 transition-colors hover:bg-white/5 hover:text-white sm:order-1"
+            >
+              <RotateCcw size={15} aria-hidden="true" />
+              {m.startOver}
+            </button>
+            <button
+              type="button"
+              onClick={closeGuide}
+              className="min-h-11 rounded-xl bg-white px-6 text-sm font-semibold text-[#0b0e13] transition-colors hover:bg-white/90 sm:order-2"
+            >
+              {m.startExploration}
+            </button>
           </div>
         </div>
       </dialog>
