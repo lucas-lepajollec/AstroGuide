@@ -6,12 +6,25 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-09-06
+
 ### Changed
 
 - Replaced the generic rocket artwork with AstroGuide's emerald negative-space launch identity across the application and favicon.
 
 ### Added
 
+- The first deliberately maintained AstroGuide release line.
+- Interactive 3D exploration, a 2D astronomical map and visual size comparison across the maintained catalogue.
 - A consistent repository, quality, security, and release foundation.
+- English, French, Spanish and German interfaces with honest labels for illustrative positions, scales and rendering.
+- Stateless multi-architecture container delivery with health checks, SBOM, provenance and immutable commit-SHA rollback tags.
+
+### Security
+
+- Updated both transitive `fflate` lines to patched releases before publishing the first maintained version.
 
 Earlier development remains available in Git history; this changelog does not invent releases that were never deliberately published.
+
+[Unreleased]: https://github.com/lucas-lepajollec/AstroGuide/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/lucas-lepajollec/AstroGuide/releases/tag/v0.1.0

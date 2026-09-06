@@ -1,7 +1,7 @@
 {
   "name": "astroguide",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.1.0",
   "type": "module",
   "engines": {
     "node": "22.x"
@@ -21,7 +21,8 @@
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run build:demo"
+    "check:version": "node scripts/check-version.mjs",
+    "check": "npm run check:version && npm run lint && npm run typecheck && npm run test && npm run build && npm run build:demo"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
