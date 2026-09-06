@@ -22,7 +22,7 @@
 
 AstroGuide turns abstract astronomical objects and orders of magnitude into something people can explore. Its catalog of 39 celestial objects is available through a navigable 3D scene, an interactive 2D map, and a visual size comparison.
 
-The application is static, French-first, account-free, and runs without a backend, analytics, cookies, or remote API calls.
+The application is static, English-first with maintained French, Spanish, and German locales, account-free, and runs without a backend, analytics, cookies, or remote API calls.
 
 ## Product preview
 
