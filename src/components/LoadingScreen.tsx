@@ -30,9 +30,9 @@ export default function LoadingScreen() {
                 <img src="/logo.svg?v=3" alt="" className="relative mb-6 h-24 w-24 object-contain" />
 
                 {/* Text */}
-                <h1 className="text-3xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 mb-2">
+                <div className="text-3xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60 mb-2">
                     AstroGuide
-                </h1>
+                </div>
                 <p className="text-xs font-mono tracking-[0.3em] text-emerald-400/80 uppercase">
                     {m.loading}
                 </p>
