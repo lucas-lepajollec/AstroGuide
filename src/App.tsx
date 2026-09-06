@@ -1,15 +1,16 @@
 import Scene3D from './components/Scene3D';
-import Map2D from './components/Map2D';
-import SizeComparison from './components/SizeComparison';
 import Header from './components/Header';
 import SidePanel from './components/SidePanel';
 import NavPanel from './components/NavPanel';
 import { useAstroStore } from './store/useAstroStore';
 import { AnimatePresence, useReducedMotion } from 'motion/react';
 import LoadingScreen from './components/LoadingScreen';
-import { useState, useEffect } from 'react';
+import { lazy, Suspense, useState, useEffect } from 'react';
 import DemoExperience from './components/DemoExperience';
 import {isDemoMode} from './config/runtimeMode';
+
+const Map2D = lazy(() => import('./components/Map2D'));
+const SizeComparison = lazy(() => import('./components/SizeComparison'));
 
 export default function App() {
   const currentView = useAstroStore((s) => s.currentView);
@@ -38,10 +39,12 @@ export default function App() {
       <SidePanel />
 
       {/* Overlay views */}
-      <AnimatePresence>
-        {currentView === '2D' && <Map2D />}
-        {currentView === 'SIZE' && <SizeComparison />}
-      </AnimatePresence>
+      <Suspense fallback={null}>
+        <AnimatePresence>
+          {currentView === '2D' && <Map2D />}
+          {currentView === 'SIZE' && <SizeComparison />}
+        </AnimatePresence>
+      </Suspense>
 
       {/* Loading Screen Overlay (highest z-index) */}
       <AnimatePresence>
