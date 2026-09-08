@@ -1,9 +1,6 @@
-name: astroguide
-
 services:
   astroguide:
     image: ghcr.io/lucas-lepajollec/astroguide:latest
-    container_name: astroguide-app
     ports:
       - "2502:2502"
     restart: unless-stopped
