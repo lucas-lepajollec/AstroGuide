@@ -18,9 +18,9 @@ RUN chown -R nginx:nginx /usr/share/nginx/html \
     && rm -f /tmp/nginx.pid
 
 USER nginx
-EXPOSE 8080
+EXPOSE 2502
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-  CMD wget -qO- http://127.0.0.1:8080/ >/dev/null || exit 1
+  CMD wget -qO- http://127.0.0.1:2502/ >/dev/null || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]
