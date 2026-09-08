@@ -5,7 +5,7 @@ services:
     image: ${ASTROGUIDE_IMAGE:-ghcr.io/lucas-lepajollec/astroguide:latest}
     container_name: astroguide-app
     ports:
-      - "${ASTROGUIDE_BIND_ADDRESS:-127.0.0.1}:2502:8080"
+      - "2502:8080"
     restart: unless-stopped
     read_only: true
     tmpfs:

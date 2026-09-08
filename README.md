@@ -47,7 +47,7 @@ The 2D tactical map adds a touch-friendly, zoomable overview of the same catalog
 
 ### Docker Compose
 
-The tracked Compose file pulls the published GHCR image, binds only to the local machine, runs with no Linux capabilities, and uses a read-only root filesystem:
+The tracked Compose file pulls the published GHCR image, publishes the host port on all interfaces, runs with no Linux capabilities, and uses a read-only root filesystem:
 
 ```yaml
 name: astroguide
@@ -57,7 +57,7 @@ services:
     image: ${ASTROGUIDE_IMAGE:-ghcr.io/lucas-lepajollec/astroguide:latest}
     container_name: astroguide-app
     ports:
-      - "${ASTROGUIDE_BIND_ADDRESS:-127.0.0.1}:2502:8080"
+      - "2502:8080"
     restart: unless-stopped
     read_only: true
     tmpfs:
@@ -78,7 +78,7 @@ docker compose ps
 
 Open `http://localhost:2502`.
 
-Set `ASTROGUIDE_BIND_ADDRESS=0.0.0.0` only for deliberate exposure on a trusted LAN. To build the current checkout instead, run `docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build`.
+Docker publishes the port on the host interfaces by default. Use `127.0.0.1:2502:8080` for localhost-only publication. To build the current checkout instead, run `docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build`.
 
 For a controlled update, record the current image digest with `docker image inspect`, pull, recreate, and verify the health status. To roll back, set `ASTROGUIDE_IMAGE` to a previous `sha-<full-commit>` or version tag and recreate the service. `docker compose down` removes the container and network; AstroGuide has no persistent server-side data.
 
