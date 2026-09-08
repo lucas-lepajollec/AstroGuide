@@ -54,7 +54,7 @@ name: astroguide
 
 services:
   astroguide:
-    image: ${ASTROGUIDE_IMAGE:-ghcr.io/lucas-lepajollec/astroguide:latest}
+    image: ghcr.io/lucas-lepajollec/astroguide:latest
     container_name: astroguide-app
     ports:
       - "2502:2502"
@@ -73,7 +73,7 @@ Open `http://<server-ip>:2502` from your LAN, or `http://localhost:2502` on the 
 
 AstroGuide uses port `2502` both on the NAS and inside the container, so the mapping stays easy to recognize. To build the current checkout instead, run `docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build`.
 
-For a controlled update, record the current image digest with `docker image inspect`, pull, recreate, and verify the health status. To roll back, set `ASTROGUIDE_IMAGE` to a previous `sha-<full-commit>` or version tag and recreate the service. `docker compose down` removes the container and network; AstroGuide has no persistent server-side data.
+For a controlled update, record the current image digest with `docker image inspect`, pull, recreate, and verify the health status. To roll back, change the Compose `image:` line to a previous `sha-<full-commit>` or version tag and recreate the service. `docker compose down` removes the container and network; AstroGuide has no persistent server-side data.
 
 ### Local development
 
