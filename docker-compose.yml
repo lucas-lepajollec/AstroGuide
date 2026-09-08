@@ -2,7 +2,7 @@ name: astroguide
 
 services:
   astroguide:
-    image: ${ASTROGUIDE_IMAGE:-ghcr.io/lucas-lepajollec/astroguide:latest}
+    image: ghcr.io/lucas-lepajollec/astroguide:latest
     container_name: astroguide-app
     ports:
       - "2502:2502"
