@@ -5,18 +5,5 @@ services:
     image: ${ASTROGUIDE_IMAGE:-ghcr.io/lucas-lepajollec/astroguide:latest}
     container_name: astroguide-app
     ports:
-      - "2502:8080"
+      - "2502:2502"
     restart: unless-stopped
-    read_only: true
-    tmpfs:
-      - /tmp:size=16m,mode=1777
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
