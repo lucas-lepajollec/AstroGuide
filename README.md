@@ -26,12 +26,12 @@ The application is static, English-first with maintained French, Spanish, and Ge
 
 ## Product preview
 
-| Interactive exploration | Visual comparison |
-| --- | --- |
-| Move through a Three.js scene, inspect objects, search the catalog, and control the camera. | Compare approximate diameters and extents while filtering the objects that matter. |
-| <img src="docs/assets/screenshots/astroguide-demo-3d.png" alt="AstroGuide 3D exploration with the object catalog" width="640" /> | <img src="docs/assets/screenshots/astroguide-demo-comparison.png" alt="AstroGuide visual size comparison" width="640" /> |
+The catalog, labels, and views below come from the isolated public demo. Screenshots use the English interface with the demo intro dialog closed.
 
-The 2D tactical map adds a touch-friendly, zoomable overview of the same catalog.
+| Interactive 2D map | Visual comparison |
+| --- | --- |
+| A zoomable, pannable overview of the same catalog for mouse and touch input. | Compare approximate diameters and extents while filtering the objects that matter. |
+| <img src="docs/assets/screenshots/astroguide-demo-map.png" alt="AstroGuide 2D map with Saturn selected" width="640" /> | <img src="docs/assets/screenshots/astroguide-demo-comparison.png" alt="AstroGuide visual size comparison" width="640" /> |
 
 ## Highlights
 

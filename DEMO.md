@@ -31,6 +31,21 @@ npm run build:demo
 npm run preview:demo
 ```
 
+## Captures README reproductibles
+
+Régénérez le jeu de captures depuis une démo locale isolée :
+
+```bash
+npm ci --include=optional
+npx playwright install chromium
+npm run demo:capture
+```
+
+Le script démarre son propre serveur sur `127.0.0.1:2513`, force l'anglais,
+ferme la boîte de dialogue d'introduction avant la première capture, et refuse
+de réutiliser un serveur déjà ouvert. La pastille Demo peut rester visible.
+Utilisez `ASTROGUIDE_CAPTURE_PORT` si le port `2513` est occupé.
+
 ## Validation obligatoire avant publication
 
 ```bash
