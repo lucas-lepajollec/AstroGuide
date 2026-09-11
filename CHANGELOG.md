@@ -6,6 +6,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Security
+
+- Pin patched Vitest `4.1.11` and js-yaml `4.3.2` so the protected dependency audit can pass.
+
 ### Changed
 
 - Let Docker Compose derive the stack and container names instead of imposing fixed names that AstroGuide does not require.
