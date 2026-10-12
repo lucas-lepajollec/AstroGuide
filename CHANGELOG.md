@@ -6,6 +6,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+- Refresh compatible transitive dependencies to fix brace-expansion and source-map-js audit findings.
+
 ### Security
 
 - Pin patched Vitest `4.1.11` and js-yaml `4.3.2` so the protected dependency audit can pass.
